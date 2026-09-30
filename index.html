@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jardim das Palavras</title>
+
+  <!--Partilha-->
+  <meta name="description" content="Poster interativo de poesia generativa: rega um poema português até ele florir. Open call DZAIN IT." />
+  <meta property="og:title" content="Jardim das Palavras" />
+  <meta property="og:description" content="Rega um poema português até ele florir e leva-o num postal A5." />
+  <meta property="og:type" content="website" />
+
+  <!--Ícone-->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <!--Tipografia-->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!--Bibliotecas-->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!--Estilos-->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="light">
+  <header id="bar">
+    <div class="left">
+      <span class="brand">jardim das palavras</span>
+      <button id="reset" class="link" type="button">outro poema ↻</button>
+      <button id="poemsBtn" class="link" type="button">poemas</button>
+      <button id="resultsBtn" class="link" type="button">resultados</button>
+      <button id="aboutBtn" class="link" type="button">sobre</button>
+    </div>
+    <div class="right">
+      <button id="theme" class="link" type="button">◐ escuro</button>
+    </div>
+  </header>
+
+  <button id="exportBtn" class="pill" type="button">exportar postal A5 ↓</button>
+
+  <!--Exportar-->
+  <section id="export" class="modal" aria-hidden="true">
+    <button class="link close" data-close type="button">fechar ×</button>
+    <div class="wrap">
+      <div class="head">
+        <span class="title">o teu postal</span>
+      </div>
+      <div class="body">
+        <div class="preview" id="preview"></div>
+
+        <!--Controlos-->
+        <aside class="side">
+          <div class="group">
+            <span class="mono label">fundo</span>
+            <div class="seg" id="bgMode" role="group" aria-label="tipo de fundo">
+              <button class="pill small active" type="button" data-mode="color">cor</button>
+              <button class="pill small" type="button" data-mode="portrait">retrato do poeta</button>
+            </div>
+            <span class="mono note" id="portraitNote" aria-live="polite"></span>
+          </div>
+
+          <div class="group">
+            <span class="mono label">cores</span>
+            <div class="pickers">
+              <label class="picker" id="bgPicker">
+                <span class="mono">fundo</span>
+                <input type="color" id="bgCol" value="#ffffff" />
+                <input type="text" id="bgHex" class="hex" value="#FFFFFF" maxlength="7"
+                       spellcheck="false" autocomplete="off" aria-label="cor de fundo (hex)" />
+              </label>
+              <label class="picker">
+                <span class="mono">texto</span>
+                <input type="color" id="inkCol" value="#111111" />
+                <input type="text" id="inkHex" class="hex" value="#111111" maxlength="7"
+                       spellcheck="false" autocomplete="off" aria-label="cor do texto (hex)" />
+              </label>
+            </div>
+            <div class="swatches" id="swatches"></div>
+          </div>
+
+          <div class="group">
+            <span class="mono label">guardar</span>
+            <div class="actions">
+              <button class="pill ghost" id="saveBtn" type="button">guardar nos resultados ♡</button>
+              <button class="pill" id="dlPng" type="button">exportar PNG ↓</button>
+              <button class="pill" id="dlPdf" type="button">exportar PDF ↓</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!--Poemas-->
+  <section id="poems" class="modal" aria-hidden="true">
+    <button class="link close" data-close type="button">fechar ×</button>
+    <div class="wrap">
+      <div class="head">
+        <span class="title">poemas</span>
+        <button class="pill" id="writeBtn" type="button">+ escrever o teu poema</button>
+      </div>
+      <div class="poems-tools">
+        <input type="search" id="poemSearch" class="search" autocomplete="off" spellcheck="false"
+               placeholder="procurar por título, poeta ou verso" aria-label="procurar poemas" />
+        <div class="chips" id="poemChips" role="group" aria-label="filtrar por poeta"></div>
+        <span class="mono" id="poemCount" aria-live="polite"></span>
+      </div>
+      <div class="poems-list" id="poemsList"></div>
+    </div>
+  </section>
+
+  <!--Escrever um poema-->
+  <section id="write" class="modal" aria-hidden="true">
+    <button class="link close" data-close type="button">fechar ×</button>
+    <form class="wrap" id="writeForm" novalidate>
+      <div class="head">
+        <span class="title">o teu poema</span>
+        <span class="mono" id="wLimits"></span>
+      </div>
+      <div class="write-grid">
+        <div class="write-col">
+          <label class="field">
+            <span class="mono label">título</span>
+            <input type="text" id="wTitle" maxlength="32" autocomplete="off" placeholder="o nome do poema" />
+          </label>
+          <label class="field">
+            <span class="mono label">autor</span>
+            <input type="text" id="wAuthor" maxlength="28" autocomplete="off" placeholder="quem o escreveu" />
+          </label>
+          <label class="field">
+            <span class="field-head">
+              <span class="mono label">versos</span>
+              <span class="mono count" id="wCount"></span>
+            </span>
+            <textarea id="wLines" rows="8" spellcheck="true" placeholder="um verso por linha"></textarea>
+          </label>
+        </div>
+        <div class="write-col">
+          <span class="mono label">flor</span>
+          <div class="flower-grid" id="flowerGrid" role="radiogroup" aria-label="flor que acompanha o poema"></div>
+          <p class="mono error" id="wError" aria-live="polite"></p>
+          <button class="pill" type="submit">plantar o poema ↓</button>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!--Resultados-->
+  <section id="results" class="modal" aria-hidden="true">
+    <button class="link close" data-close type="button">fechar ×</button>
+    <div class="wrap">
+      <div class="head">
+        <span class="title">resultados</span>
+        <span class="mono">postais guardados neste navegador</span>
+      </div>
+      <div class="grid" id="resultsGrid"></div>
+    </div>
+  </section>
+
+  <!--Sobre-->
+  <section id="about" class="modal" aria-hidden="true">
+    <button class="link close" data-close type="button">fechar ×</button>
+    <article>
+      <div class="mono">open call · DZAIN IT</div>
+      <h1>Jardim<em>das Palavras</em></h1>
+      <div class="mono">poesia visual generativa · p5.js + ml5.js</div>
+
+      <p class="epigraph">«O poeta é um fingidor.»</p>
+      <div class="mono">— Fernando Pessoa, Autopsicografia</div>
+
+      <h2>o projeto</h2>
+      <p>
+        <em>Jardim das Palavras</em> é um poster interativo de poesia generativa,
+        realizado para a open call do <strong>DZAIN IT</strong>.
+      </p>
+      <p>
+        Cada poema é uma semente. Regada com o rato ou com a mão, através da
+        webcam, a planta cresce andar a andar, e em cada andar nascem as palavras
+        do poema, que se vão revelando ao lado. Cada nó <span class="mono">~*~</span>
+        fecha um verso. No fim, uma flor abre: rosa, margarida, tulipa, girassol,
+        papoila, lavanda, hortênsia, campânula, dente-de-leão ou flor de chavetas.
+        Cada uma tem a sua maneira de abrir.
+      </p>
+      <p>
+        Quando tudo floresce, o poema e a sua flor podem ser levados para casa
+        num postal A5, nas cores que escolheres, e guardados nos resultados.
+      </p>
+
+      <h2>poesia portuguesa</h2>
+      <p>
+        Todos os poemas são reais, de poetas portugueses, e estão em domínio público.
+        Surgem em excerto e em ortografia atualizada:
+      </p>
+      <p class="poets">
+        Luís de Camões · Almeida Garrett · Antero de Quental · Cesário Verde · Camilo Pessanha ·
+        Mário de Sá-Carneiro · Florbela Espanca · Fernando Pessoa e os seus
+        heterónimos, Alberto Caeiro, Ricardo Reis e Álvaro de Campos.
+      </p>
+      <p>
+        E podes plantar um poema teu: com título, autor e a flor que o acompanha.
+        Fica guardado neste navegador, ao lado dos poetas.
+      </p>
+
+      <h2>como usar</h2>
+      <ul>
+        <li><span class="mono">mover</span><span>o regador segue o rato ou o dedo indicador</span></li>
+        <li><span class="mono">regar</span><span>clicar e segurar, ou fazer pinça com o polegar e o indicador</span></li>
+        <li><span class="mono">abrir a flor</span><span>continuar a regar depois de o poema estar completo</span></li>
+        <li><span class="mono">exportar</span><span>guardar o postal A5 em PNG ou PDF</span></li>
+        <li><span class="mono">resultados</span><span>rever e descarregar os postais guardados neste navegador</span></li>
+        <li><span class="mono">outro poema</span><span>plantar um poema ao acaso</span></li>
+        <li><span class="mono">poemas</span><span>escolher um poeta e um dos seus poemas</span></li>
+        <li><span class="mono">escrever</span><span>plantar um poema teu, com título, autor e a flor que o acompanha</span></li>
+        <li><span class="mono">claro / escuro</span><span>trocar as cores do jardim</span></li>
+      </ul>
+
+      <h2>técnica</h2>
+      <p>
+        Desenvolvido com p5.js e ml5.js (HandPose). A imagem da câmara nunca é
+        mostrada nem enviada: é analisada localmente, no próprio navegador,
+        apenas para encontrar a posição da mão. Os postais guardados ficam
+        apenas neste navegador. Os retratos dos poetas, usados como fundo
+        opcional do postal, vêm da Wikipédia (Wikimedia Commons).
+      </p>
+
+      <div class="ascii">   ,--.
+[____]\__o   .  ,
+ \__/      '  .   ~*~</div>
+    </article>
+  </section>
+
+  <!--Popup de confirmação-->
+  <div id="dialog" class="dialog" aria-hidden="true">
+    <div class="dialog-box" role="alertdialog" aria-modal="true" aria-labelledby="dialogTitle" aria-describedby="dialogText">
+      <p class="dialog-title" id="dialogTitle"></p>
+      <p class="mono dialog-text" id="dialogText"></p>
+      <div class="dialog-actions">
+        <button class="pill ghost" id="dialogCancel" type="button">cancelar</button>
+        <button class="pill active" id="dialogOk" type="button">apagar</button>
+      </div>
+    </div>
+  </div>
+
+  <!--Cursor da mão-->
+  <div id="handCursor" aria-hidden="true"></div>
+
+  <!--Código-->
+  <script src="js/data/poems.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/flowers.js"></script>
+  <script src="js/plant.js"></script>
+  <script src="js/poem-text.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/water.js"></script>
+  <script src="js/hands.js"></script>
+  <script src="js/garden.js"></script>
+  <script src="js/postcard.js"></script>
+  <script src="js/results.js"></script>
+  <script src="js/ui/modals.js"></script>
+  <script src="js/ui/poems-menu.js"></script>
+  <script src="js/ui/poem-form.js"></script>
+  <script src="js/ui/export-panel.js"></script>
+  <script src="js/ui/interface.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
