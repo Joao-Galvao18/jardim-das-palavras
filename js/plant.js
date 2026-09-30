@@ -157,17 +157,15 @@ class Plant {
     g.translate(x, baseY);
     if (ps !== 1) g.scale(ps);
 
-    // Base e palavra-semente
+    // Base
     glyph(g, '^', 0, 4, { font: MONO, size: 14, col: P.ink, alpha: 255 * L });
-    this.catchR = max(28, measureCached(this.word, SERIF, 22) / 2 + 10);
-    glyph(g, this.word, 0, 32, { size: 22, italic: this.bloomed || stat, col: P.ink, alpha: 255 * L });
 
     // Progresso da rega
     if (!stat && !this.complete) {
       const frac = this.bloomed ? min(1, this.bloomWater / OPEN_DROPS) : this.water / DROPS_PER_TIER;
       let dots = '';
       for (let k = 0; k < 8; k++) dots += k < floor(frac * 8) ? '•' : '·';
-      glyph(g, dots, 0, 46, { font: MONO, size: 9, col: P.faint, alpha: 255 * L });
+      glyph(g, dots, 0, 22, { font: MONO, size: 9, col: P.faint, alpha: 255 * L });
     }
 
     // Balanço ligeiro à volta da base

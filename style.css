@@ -227,32 +227,23 @@ canvas {
   pointer-events: auto;
 }
 
-/* Fechar (alinhado com o conteúdo) */
+/* Fechar (à direita do conteúdo, visível ao fazer scroll) */
 .modal .close {
-  position: fixed;
-  top: 30px;
-  right: max(28px, calc((100vw - 1040px) / 2 + 24px));
+  position: sticky;
+  top: 24px;
   z-index: 2;
-  padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper);
+  display: block;
+  margin: 0 0 22px auto;
+  padding: 6px 0;
   font-family: var(--mono);
   font-weight: 300;
   font-size: 13px;
-  transition: color 0.3s ease, border-color 0.3s ease;
-}
-
-.modal .close:hover,
-.modal .close:focus-visible,
-.modal .close.hand-hover {
-  border-color: var(--ink);
 }
 
 .modal .wrap {
   max-width: 1040px;
   margin: 0 auto;
-  padding: 78px 24px 60px;
+  padding: 24px 24px 60px;
 }
 
 .modal .head {
@@ -288,7 +279,7 @@ canvas {
   height: 100vh;
   height: 100dvh;
   box-sizing: border-box;
-  padding: 58px 24px 24px;
+  padding: 20px 24px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -879,7 +870,7 @@ canvas {
 #about article {
   max-width: 580px;
   margin: 0 auto;
-  padding: 96px 24px 80px;
+  padding: 24px 24px 80px;
   font-family: var(--serif);
   font-size: 19px;
   line-height: 1.55;
@@ -970,7 +961,7 @@ button {
     height: auto;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: 64px 18px 32px;
+    padding: 14px 18px 32px;
   }
 
   #export .body {
@@ -998,7 +989,7 @@ button {
   }
 
   .modal .wrap {
-    padding: 64px 18px 40px;
+    padding: 14px 18px 40px;
   }
 
   .modal .title {
@@ -1017,8 +1008,7 @@ button {
 
 @media (max-width: 560px) {
   .modal .close {
-    top: 16px;
-    right: 16px;
+    top: 12px;
   }
 
   #bar {
@@ -1036,7 +1026,7 @@ button {
   }
 
   #about article {
-    padding: 72px 18px 60px;
+    padding: 14px 18px 60px;
     font-size: 18px;
   }
 
