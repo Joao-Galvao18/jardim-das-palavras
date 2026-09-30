@@ -26,6 +26,22 @@ function fitPoemSize(poem, colW, maxH, maxSize, withFlower = false) {
   return max(11, min(poemSize(poem, colW, maxSize), byHeight));
 }
 
+// Posição de cada palavra em relação ao centro (guardada por tamanho)
+function wordOffsets(pl, size) {
+  if (!pl.wordPos || pl.wordPos.size !== size) {
+    const lines = pl.poem.lines.map((line) => {
+      let x = -measure(MAIN, line, SERIF, size, true) / 2;
+      return line.split(' ').map((w) => {
+        const item = { w, dx: x };
+        x += measure(MAIN, w + ' ', SERIF, size, true);
+        return item;
+      });
+    });
+    pl.wordPos = { size, lines };
+  }
+  return pl.wordPos.lines;
+}
+
 // Desenha o poema
 function drawPoemBlock(g, P, pl, cx, cy, size, { A = 1, stat = false, flower = null } = {}) {
   const poem = pl.poem;
@@ -34,17 +50,15 @@ function drawPoemBlock(g, P, pl, cx, cy, size, { A = 1, stat = false, flower = n
   let idx = 0;
 
   // Versos
-  for (const line of poem.lines) {
-    let x = cx - measure(g, line, SERIF, size, true) / 2;
-    for (const w of line.split(' ')) {
+  for (const line of wordOffsets(pl, size)) {
+    for (const { w, dx } of line) {
       const a = stat ? 1 : pl.reveal(idx);
       idx++;
       if (a > 0.01) {
-        glyph(g, w, x, y + (1 - smooth(a)) * 4, {
-          size, italic: true, align: LEFT, col: P.ink, alpha: 255 * smooth(a) * A, blur: stat ? 0 : (1 - a) * 4,
+        glyph(g, w, cx + dx, y + (1 - smooth(a)) * 4, {
+          size, italic: true, align: LEFT, col: P.ink, alpha: 255 * smooth(a) * A,
         });
       }
-      x += measure(g, w + ' ', SERIF, size, true);
     }
     y += lh;
   }

@@ -119,12 +119,12 @@ class Plant {
   }
 
   // Desenha um fragmento
-  drawWord(g, P, tier, y, baseSize, alpha, blur) {
+  drawWord(g, P, tier, y, baseSize, alpha) {
     const s = tier.side;
     const align = s < 0 ? RIGHT : LEFT;
     const slash = s < 0 ? '/' : '\\';
-    glyph(g, slash, s * 6, y, { size: baseSize, italic: true, align, alpha, blur, col: P.ink });
-    const wx = s * (6 + measure(g, slash, SERIF, baseSize, true) + baseSize * 0.35);
+    glyph(g, slash, s * 6, y, { size: baseSize, italic: true, align, alpha, col: P.ink });
+    const wx = s * (6 + measureCached(slash, SERIF, baseSize, true) + baseSize * 0.35);
 
     let txt = tier.text, font = SERIF, size = baseSize, italic = true, underline = false;
     switch (tier.style) {
@@ -134,10 +134,10 @@ class Plant {
       case 'underline': underline = true; break;
       case 'large':     size = baseSize * 1.25; break;
     }
-    glyph(g, txt, wx, y, { size, font, italic, align, alpha, blur, col: P.ink });
+    glyph(g, txt, wx, y, { size, font, italic, align, alpha, col: P.ink });
 
     if (underline && alpha > 1) {
-      const w = measure(g, txt, font, size, italic);
+      const w = measureCached(txt, font, size, italic);
       const x0 = s < 0 ? wx - w : wx;
       g.stroke(P.ink[0], P.ink[1], P.ink[2], alpha);
       g.strokeWeight(0.8);
@@ -159,7 +159,7 @@ class Plant {
 
     // Base e palavra-semente
     glyph(g, '^', 0, 4, { font: MONO, size: 14, col: P.ink, alpha: 255 * L });
-    this.catchR = max(28, measure(g, this.word, SERIF, 22) / 2 + 10);
+    this.catchR = max(28, measureCached(this.word, SERIF, 22) / 2 + 10);
     glyph(g, this.word, 0, 32, { size: 22, italic: this.bloomed || stat, col: P.ink, alpha: 255 * L });
 
     // Progresso da rega
@@ -190,18 +190,17 @@ class Plant {
       const ease = smooth(a);
       const y = -STEM0 - (i + 0.5) * TH + 4 + (1 - ease) * 6;
       const alpha = 255 * ease * L;
-      const blur = stat ? 0 : (1 - ease) * 4;
 
       if (tier.type === 'node') {
         // Nó ~*~
-        const w = measure(g, '~*~', MONO, 13);
+        const w = measureCached('~*~', MONO, 13);
         if (P.knock !== false) {
           g.fill(P.paper[0], P.paper[1], P.paper[2], 255 * L);
           g.rect(-w / 2 - 2, y - 10, w + 4, 13);
         }
-        glyph(g, '~*~', 0, y, { font: MONO, size: 13, alpha, blur, col: P.ink });
+        glyph(g, '~*~', 0, y, { font: MONO, size: 13, alpha, col: P.ink });
       } else {
-        this.drawWord(g, P, tier, y, wordSize, alpha, blur);
+        this.drawWord(g, P, tier, y, wordSize, alpha);
       }
     }
 

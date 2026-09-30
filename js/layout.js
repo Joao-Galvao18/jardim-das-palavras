@@ -1,9 +1,31 @@
 // Layout
 
-// Fundo real da barra de topo
+// Fundo real da barra de topo (medido só quando a barra muda)
+let barBottomCache = null;
 function barBottom() {
-  const bar = document.getElementById('bar');
-  return bar ? bar.getBoundingClientRect().bottom : 60;
+  if (barBottomCache === null) {
+    const bar = document.getElementById('bar');
+    if (!bar) return 60;
+    barBottomCache = bar.getBoundingClientRect().bottom;
+    new ResizeObserver(() => {
+      barBottomCache = bar.getBoundingClientRect().bottom;
+      layoutKey = '';
+    }).observe(bar);
+  }
+  return barBottomCache;
+}
+
+// Layout guardado (só recalcula quando algo muda)
+let layoutKey = '';
+let layoutPlant = null;
+function currentLayout() {
+  const key = `${width}x${height}|${barBottom()}`;
+  if (key !== layoutKey || layoutPlant !== plant || !layout) {
+    layoutKey = key;
+    layoutPlant = plant;
+    layout = computeLayout(plant.poem, plant.seq.length, plant);
+  }
+  return layout;
 }
 
 // Calcula o layout

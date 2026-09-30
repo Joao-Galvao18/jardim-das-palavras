@@ -227,14 +227,26 @@ canvas {
   pointer-events: auto;
 }
 
+/* Fechar (alinhado com o conteúdo) */
 .modal .close {
   position: fixed;
-  top: 18px;
-  right: 22px;
+  top: 30px;
+  right: max(28px, calc((100vw - 1040px) / 2 + 24px));
   z-index: 2;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
   font-family: var(--mono);
   font-weight: 300;
   font-size: 13px;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.modal .close:hover,
+.modal .close:focus-visible,
+.modal .close.hand-hover {
+  border-color: var(--ink);
 }
 
 .modal .wrap {
@@ -1004,6 +1016,11 @@ button {
 }
 
 @media (max-width: 560px) {
+  .modal .close {
+    top: 16px;
+    right: 16px;
+  }
+
   #bar {
     padding: 14px 16px;
     gap: 8px 16px;

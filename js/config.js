@@ -22,6 +22,7 @@ const OPEN_DROPS = 220;
 const GROW_LERP = 0.08;
 const HEIGHT_LERP = 0.09;
 const OPEN_LERP = 0.045;
+const MAX_DROPS = 260;
 
 // Flores
 const FLOWERS = {
@@ -48,6 +49,7 @@ const SPARK_GLYPHS = ['+', '+', '‡', '*', '+'];
 // Hand-tracking
 const HAND_TIMEOUT = 1500;
 const HAND_HOLD = 4000;
+const HAND_INTERVAL = 66;
 
 // Poemas próprios
 const MAX_VERSES = 8;

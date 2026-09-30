@@ -7,7 +7,7 @@ class WaterDrop {
     this.pos = createVector(x, y);
     this.vel = createVector(vx, vy);
     this.ch = random(DROP_GLYPHS);
-    this.size = random(11, 15);
+    this.size = 13;
     this.terminal = random(4.6, 7);
     this.alpha = 0;
     this.dead = false;
@@ -116,7 +116,7 @@ class WateringCan {
 
   // Rega
   emit(list) {
-    if (!this.pouring || list.length > 700) return;
+    if (!this.pouring || list.length > MAX_DROPS) return;
     const flow = map(this.tilt, 0.22, 0.5, 0.4, 1, true);
     const n = random() < flow ? (random() < 0.55 ? 2 : 1) : 0;
     const tip = this.tip();

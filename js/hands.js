@@ -15,7 +15,7 @@ function initHandTracking() {
       startDetection();
     });
     // Modelo HandPose
-    handPose = ml5.handPose({ maxHands: 1, flipped: true, modelType: 'full' }, () => {
+    handPose = ml5.handPose({ maxHands: 1, flipped: true }, () => {
       modelReady = true;
       startDetection();
     });
@@ -29,7 +29,13 @@ function initHandTracking() {
 function startDetection() {
   if (detecting || !camReady || !modelReady) return;
   detecting = true;
-  handPose.detectStart(video, gotHands);
+  const tick = async () => {
+    try {
+      gotHands(await handPose.detect(video));
+    } catch (e) {}
+    setTimeout(tick, HAND_INTERVAL);
+  };
+  tick();
 }
 
 // Keypoint por nome

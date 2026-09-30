@@ -4,31 +4,41 @@ const MAIN = window;
 const GOLDEN = 2.39996;
 
 // Texto
+// Fonte, tamanho e estilo (só muda o que for diferente)
+function setFont(g, font, size, italic) {
+  const r = g._renderer;
+  const style = italic ? ITALIC : NORMAL;
+  if (r._textFont !== font) g.textFont(font);
+  if (r._textSize !== size) g.textSize(size);
+  if (r._textStyle !== style) g.textStyle(style);
+}
+
 // Desenha texto
 function glyph(g, str, x, y, o = {}) {
   const {
     size = 15, col = C.ink, alpha = 255, italic = false,
-    align = CENTER, blur = 0, font = SERIF,
+    align = CENTER, font = SERIF,
   } = o;
   if (alpha < 1) return;
   g.noStroke();
-  g.textFont(font);
-  g.textSize(size);
-  g.textStyle(italic ? ITALIC : NORMAL);
+  setFont(g, font, round(size * 2) / 2, italic);
   g.textAlign(align, BASELINE);
   g.fill(col[0], col[1], col[2], alpha);
-  const useBlur = blur > 0.2;
-  if (useBlur) g.drawingContext.filter = `blur(${blur.toFixed(2)}px)`;
   g.text(str, x, y);
-  if (useBlur) g.drawingContext.filter = 'none';
 }
 
 // Largura de um texto
 function measure(g, str, font, size, italic = false) {
-  g.textFont(font);
-  g.textSize(size);
-  g.textStyle(italic ? ITALIC : NORMAL);
+  setFont(g, font, round(size * 2) / 2, italic);
   return g.textWidth(str);
+}
+
+// Largura guardada (para textos que se medem em todos os frames)
+const widthCache = new Map();
+function measureCached(str, font, size, italic = false) {
+  const key = `${font}|${size}|${italic}|${str}`;
+  if (!widthCache.has(key)) widthCache.set(key, measure(MAIN, str, font, size, italic));
+  return widthCache.get(key);
 }
 
 // Caráter para uma direção

@@ -72,7 +72,7 @@ function draw() {
     nextPoem = null;
   }
 
-  layout = computeLayout(plant.poem, plant.seq.length, plant);
+  currentLayout();
   plant.update(layout.plantX);
 
   // Mão ou rato
