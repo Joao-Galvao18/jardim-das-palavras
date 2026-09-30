@@ -46,7 +46,7 @@ const DROP_GLYPHS = ['.', ',', "'", 's', 't', 'o', '.', '.'];
 const SPARK_GLYPHS = ['+', '+', '‡', '*', '+'];
 
 // Hand-tracking
-const HAND_TIMEOUT = 700;
+const HAND_TIMEOUT = 1500;
 
 // Poemas próprios
 const MAX_VERSES = 8;

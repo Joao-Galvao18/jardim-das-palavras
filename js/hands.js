@@ -41,25 +41,31 @@ function kp(hand, name, index) {
 function gotHands(results) {
   if (!results || results.length === 0) return;
   const hand = results[0];
-  if (hand.confidence !== undefined && hand.confidence < 0.5) return;
+  if (hand.confidence !== undefined && hand.confidence < 0.2) return;
 
-  const index = kp(hand, 'index_finger_tip', 8);
-  const thumb = kp(hand, 'thumb_tip', 4);
   const wrist = kp(hand, 'wrist', 0);
+  const thumb = kp(hand, 'thumb_tip', 4);
+  const indexTip = kp(hand, 'index_finger_tip', 8);
+  const indexMcp = kp(hand, 'index_finger_mcp', 5);
   const midMcp = kp(hand, 'middle_finger_mcp', 9);
-  if (!index || !thumb || !wrist || !midMcp) return;
+  if (!wrist || !thumb || !indexTip || !indexMcp || !midMcp) return;
 
-  // Vídeo → canvas
+  // Posição pelos nós dos dedos
   const vw = video.width, vh = video.height;
-  const nx = constrain(map(index.x, vw * 0.12, vw * 0.88, 0, 1), 0, 1);
-  const ny = constrain(map(index.y, vh * 0.1, vh * 0.8, 0, 1), 0, 1);
+  const hx = (indexMcp.x + midMcp.x) / 2, hy = (indexMcp.y + midMcp.y) / 2;
+  const nx = constrain(map(hx, vw * 0.12, vw * 0.88, 0, 1), 0, 1);
+  const ny = constrain(map(hy, vh * 0.08, vh * 0.78, 0, 1), 0, 1);
   handTarget.set(nx * width, ny * height);
 
-  // Pinça
+  // Pinça ou mão fechada
   const handSize = max(1, dist(wrist.x, wrist.y, midMcp.x, midMcp.y));
-  const ratio = dist(thumb.x, thumb.y, index.x, index.y) / handSize;
-  if (!isPinching && ratio < 0.28) isPinching = true;
-  else if (isPinching && ratio > 0.42) isPinching = false;
+  const pinch = dist(thumb.x, thumb.y, indexTip.x, indexTip.y) / handSize;
+  const tips = [8, 12, 16, 20].map((i) => hand.keypoints && hand.keypoints[i]).filter(Boolean);
+  const fist = tips.length
+    ? tips.reduce((s, t) => s + dist(t.x, t.y, wrist.x, wrist.y), 0) / tips.length / handSize
+    : 9;
+  if (!isPinching && (pinch < 0.3 || fist < 1.25)) isPinching = true;
+  else if (isPinching && pinch > 0.45 && fist > 1.5) isPinching = false;
 
   lastHandSeen = millis();
 }
@@ -119,22 +125,9 @@ function updateHandPointer(usingHand) {
   handWasPinching = isPinching;
 }
 
-// Webcam quase invisível
-function drawVideoGhost() {
-  if (!camReady || !video) return;
-  const ctx = drawingContext;
-  ctx.save();
-  ctx.globalAlpha = 0.02;
-  ctx.filter = 'grayscale(1)';
-  ctx.translate(width, 0);
-  ctx.scale(-1, 1);
-  ctx.drawImage(video.elt, 0, 0, width, height);
-  ctx.restore();
-}
-
 // Estado no rodapé
 function trackerStatus(usingHand) {
-  if (usingHand) return isPinching ? '● mão · pinça' : '● mão · pinça para regar ou carregar';
+  if (usingHand) return isPinching ? '● mão · a regar' : '● mão · fecha a mão para regar ou carregar';
   if (TOUCH_ONLY) return mouseWatering ? '● dedo · a regar' : '○ toca e segura para regar';
   if (ml5Missing) return '○ rato · clica para regar';
   if (!camReady) return millis() > 8000 ? '○ rato · câmara indisponível' : '○ a iniciar a câmara…';

@@ -65,7 +65,6 @@ function draw() {
 
   updateThemeColours();
   background(C.paper[0], C.paper[1], C.paper[2]);
-  drawVideoGhost();
 
   // Troca de poema
   if (plant.dying && plant.life < 0.02 && nextPoem) {
@@ -78,6 +77,7 @@ function draw() {
 
   // Mão ou rato
   const usingHand = millis() - lastHandSeen < HAND_TIMEOUT;
+  if (!usingHand) isPinching = false;
   const target = controlTarget(usingHand);
   updateHandPointer(usingHand);
   can.update(target, usingHand ? isPinching && !pinchOnUI : mouseWatering);
