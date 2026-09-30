@@ -76,7 +76,7 @@ function draw() {
   plant.update(layout.plantX);
 
   // Mão ou rato
-  const usingHand = millis() - lastHandSeen < HAND_TIMEOUT;
+  const usingHand = millis() - lastHandSeen < (isPinching ? HAND_HOLD : HAND_TIMEOUT);
   if (!usingHand) isPinching = false;
   const target = controlTarget(usingHand);
   updateHandPointer(usingHand);

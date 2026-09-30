@@ -15,7 +15,7 @@ function initHandTracking() {
       startDetection();
     });
     // Modelo HandPose
-    handPose = ml5.handPose({ maxHands: 1, flipped: true }, () => {
+    handPose = ml5.handPose({ maxHands: 1, flipped: true, modelType: 'full' }, () => {
       modelReady = true;
       startDetection();
     });
