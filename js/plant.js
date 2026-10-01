@@ -9,7 +9,7 @@ class Plant {
 
     // Flor
     this.flower = {
-      type: poem.flower && FLOWERS[poem.flower] ? poem.flower : random(FLOWER_TYPES),
+      type: poemFlower(poem),
       seeds: Array.from({ length: 64 }, (_, i) => ({
         a: i * GOLDEN,
         len: random(0.72, 1),

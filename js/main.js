@@ -64,6 +64,18 @@ function draw() {
   windX = (noise(t * 0.08) - 0.5) * 0.8;
 
   updateThemeColours();
+
+  // Mão ou rato
+  const usingHand = millis() - lastHandSeen < (isPinching ? HAND_HOLD : HAND_TIMEOUT);
+  if (!usingHand) isPinching = false;
+
+  // Painel aberto: o poster fica tapado, só a mão e o jardim de poemas
+  if (document.querySelector('.modal.open')) {
+    updateHandPointer(usingHand);
+    drawPoemGarden(t);
+    return;
+  }
+
   background(C.paper[0], C.paper[1], C.paper[2]);
 
   // Troca de poema
@@ -75,9 +87,7 @@ function draw() {
   currentLayout();
   plant.update(layout.plantX);
 
-  // Mão ou rato
-  const usingHand = millis() - lastHandSeen < (isPinching ? HAND_HOLD : HAND_TIMEOUT);
-  if (!usingHand) isPinching = false;
+  // Regador
   const target = controlTarget(usingHand);
   updateHandPointer(usingHand);
   can.update(target, usingHand ? isPinching && !pinchOnUI : mouseWatering);
@@ -180,4 +190,7 @@ function drawFooter(usingHand) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  if (poemView === 'garden' && document.getElementById('poems').classList.contains('open')) {
+    buildPoemGarden(visiblePoems());
+  }
 }

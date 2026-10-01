@@ -82,6 +82,7 @@ const HAND_CLICKABLE = 'button, a[href], input, textarea, select, [role="radio"]
 // Botão por baixo da mão
 function clickableAt(x, y) {
   const el = document.elementFromPoint(x, y);
+  if (el && el.id === 'poemGardenCanvas') return el;
   if (!el || el.tagName === 'CANVAS') return null;
   return el.closest(HAND_CLICKABLE);
 }
@@ -104,6 +105,8 @@ function updateHandPointer(usingHand) {
     cursor.classList.remove('show');
     setHandHover(null);
     handWasPinching = pinchOnUI = false;
+    if (handWasOverGarden) setGardenHover(-1);
+    handWasOverGarden = false;
     return;
   }
 
@@ -114,6 +117,12 @@ function updateHandPointer(usingHand) {
   const el = clickableAt(x, y);
   setHandHover(el);
 
+  // Jardim de poemas
+  const overGarden = !!el && el.id === 'poemGardenCanvas';
+  if (overGarden) setGardenHover(gardenIndexAt(x, y));
+  else if (handWasOverGarden) setGardenHover(-1);
+  handWasOverGarden = overGarden;
+
   // Cursor
   cursor.style.transform = `translate(${x}px, ${y}px)`;
   cursor.classList.toggle('show', !!el || uiOpen());
@@ -122,7 +131,10 @@ function updateHandPointer(usingHand) {
   // Pinça = clique
   if (isPinching && !handWasPinching) {
     pinchOnUI = !!el || uiOpen();
-    if (el) {
+    if (overGarden) {
+      const i = gardenIndexAt(x, y);
+      if (i >= 0) gardenPick(i);
+    } else if (el) {
       if (el.matches('input, textarea, select')) el.focus();
       else el.click();
     }

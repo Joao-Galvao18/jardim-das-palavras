@@ -1,6 +1,30 @@
 // Menu de poemas
 
 const poemFilter = { q: '', author: 'all' };
+let poemView = 'garden';
+
+// Poemas que passam na pesquisa e no filtro (os teus primeiro)
+function visiblePoems() {
+  const items = [];
+  if (poemFilter.author === 'all' || poemFilter.author === 'own') {
+    for (const p of loadCustomPoems()) if (matchesPoem(p)) items.push({ poem: p, own: true });
+  }
+  for (const p of POEMS) {
+    const author = poemFilter.author === 'all' || poemFilter.author === p.author;
+    if (author && matchesPoem(p)) items.push({ poem: p, own: false });
+  }
+  return items;
+}
+
+// Vista: jardim ou lista
+function setPoemView(view) {
+  poemView = view;
+  document.querySelectorAll('#poemView [data-view]').forEach((b) => {
+    b.classList.toggle('active', b.dataset.view === view);
+    b.setAttribute('aria-pressed', String(b.dataset.view === view));
+  });
+  renderPoemsMenu();
+}
 
 // Pesquisa
 function matchesPoem(p) {
@@ -39,8 +63,19 @@ function renderPoemChips() {
   }
 }
 
-// Lista de poemas
+// Menu de poemas (jardim ou lista)
 function renderPoemsMenu() {
+  const items = visiblePoems();
+  const garden = poemView === 'garden';
+  document.getElementById('poemCount').textContent = `${items.length} ${items.length === 1 ? 'poema' : 'poemas'}`;
+  document.getElementById('poemsList').hidden = garden;
+  document.getElementById('poemGarden').hidden = !garden;
+  if (garden) buildPoemGarden(items);
+  else renderPoemsList();
+}
+
+// Lista de poemas
+function renderPoemsList() {
   const list = document.getElementById('poemsList');
   list.innerHTML = '';
   let shown = 0;
@@ -125,8 +160,7 @@ function renderPoemsMenu() {
     byAuthor.get(author).forEach((p) => item(g, p));
   });
 
-  // Contagem e estado vazio
-  document.getElementById('poemCount').textContent = `${shown} ${shown === 1 ? 'poema' : 'poemas'}`;
+  // Estado vazio
   if (!shown) {
     const empty = document.createElement('p');
     empty.className = 'empty';

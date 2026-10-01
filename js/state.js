@@ -41,4 +41,5 @@ let isPinching = false;
 let handWasPinching = false;
 let pinchOnUI = false;
 let handHoverEl = null;
+let handWasOverGarden = false;
 const handCursorPos = { x: 0, y: 0 };

@@ -32,6 +32,11 @@ function setupInterface() {
     }
   });
 
+  // Vista jardim / lista
+  document.querySelectorAll('#poemView [data-view]').forEach((b) =>
+    b.addEventListener('click', () => setPoemView(b.dataset.view))
+  );
+
   // Formulário
   byId('writeBtn').addEventListener('click', openPoemForm);
   byId('writeForm').addEventListener('submit', submitPoemForm);

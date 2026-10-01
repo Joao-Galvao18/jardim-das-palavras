@@ -9,6 +9,15 @@ const allPoems = () => POEMS.concat(loadCustomPoems());
 const samePoem = (a, b) => !!a && !!b && (a === b || (a.id && a.id === b.id) ||
   (a.title === b.title && a.author === b.author && a.lines.join('\n') === b.lines.join('\n')));
 
+// Flor de cada poema (sempre a mesma)
+function poemFlower(poem) {
+  if (poem.flower && FLOWERS[poem.flower]) return poem.flower;
+  const key = `${poem.author}|${poem.title}|${poem.lines[0]}`;
+  let h = 0;
+  for (const ch of key) h = (h * 31 + ch.codePointAt(0)) >>> 0;
+  return FLOWER_TYPES[h % FLOWER_TYPES.length];
+}
+
 // Poema de um postal guardado
 const recipePoem = (r) => (typeof r.poem === 'number' ? POEMS[r.poem] : r.poem);
 
