@@ -9,7 +9,7 @@ function setupExportPanel() {
   const note = document.getElementById('portraitNote');
   const modeBtns = document.querySelectorAll('#bgMode [data-mode]');
   const portraitBtn = document.querySelector('#bgMode [data-mode="portrait"]');
-  const pc = { mode: 'color', img: null };
+  const pc = { mode: 'color', img: null, frame: 'none' };
   const NO_PORTRAIT = 'sem retrato disponível para este autor';
 
   // Retrato atual
@@ -17,7 +17,7 @@ function setupExportPanel() {
 
   // Guardar
   // Botão guardar
-  const saveKey = () => [bgIn.value, inkIn.value, pc.mode].join('|');
+  const saveKey = () => [bgIn.value, inkIn.value, pc.mode, pc.frame].join('|');
   const updateSaveBtn = () => {
     const saved = !!(plant.savedKeys && plant.savedKeys.has(saveKey()));
     saveBtn.classList.toggle('saved', saved);
@@ -27,7 +27,7 @@ function setupExportPanel() {
 
   // Redesenha a pré-visualização
   const refresh = () => {
-    renderPostcard(postcardTwin(plant), bgIn.value, inkIn.value, currentPortrait());
+    renderPostcard(postcardTwin(plant), bgIn.value, inkIn.value, currentPortrait(), pc.frame);
     updateSaveBtn();
   };
 
@@ -110,13 +110,30 @@ function setupExportPanel() {
     });
   }));
 
-  // Abrir o painel
+  // Moldura
+  const frameBox = document.getElementById('frames');
+  const setFrame = (key) => {
+    pc.frame = key;
+    frameBox.querySelectorAll('[data-frame]').forEach((b) => b.classList.toggle('active', b.dataset.frame === key));
+  };
+  for (const [key, f] of Object.entries(FRAMES)) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pill small frame-opt';
+    b.dataset.frame = key;
+    b.textContent = f.label;
+    b.title = key === 'none' ? 'sem moldura' : `moldura ${f.label}`;
+    b.addEventListener('click', () => { setFrame(key); refresh(); });
+    frameBox.appendChild(b);
+  }
+
   // Abrir o painel
   document.getElementById('exportBtn').addEventListener('click', () => {
     const cur = THEMES[themeName];
     setColour(bgIn, bgHexIn, toHex(cur.paper));
     setColour(inkIn, inkHexIn, toHex(cur.ink));
     setMode('color');
+    setFrame('none');
     pc.img = null;
     const hasPortrait = !!PORTRAIT_PAGES[plant.poem.author] && !plant.poem.custom;
     portraitBtn.disabled = !hasPortrait;
@@ -128,7 +145,7 @@ function setupExportPanel() {
   // Guardar e exportar
   saveBtn.addEventListener('click', () => {
     if (saveBtn.disabled) return;
-    if (saveCurrentPostcard(bgIn.value, inkIn.value, pc.mode, pc.img)) {
+    if (saveCurrentPostcard(bgIn.value, inkIn.value, pc.mode, pc.img, pc.frame)) {
       plant.savedKeys = plant.savedKeys || new Set();
       plant.savedKeys.add(saveKey());
       updateSaveBtn();
@@ -140,7 +157,7 @@ function setupExportPanel() {
 
   document.getElementById('dlPng').addEventListener('click', () => {
     const tw = postcardTwin(plant);
-    renderPostcard(tw, bgIn.value, inkIn.value, currentPortrait());
+    renderPostcard(tw, bgIn.value, inkIn.value, currentPortrait(), pc.frame);
     downloadPNG(postcardName(tw, 'png'));
   });
 
@@ -148,7 +165,7 @@ function setupExportPanel() {
   if (!window.jspdf) pdfBtn.style.display = 'none';
   pdfBtn.addEventListener('click', () => {
     const tw = postcardTwin(plant);
-    renderPostcard(tw, bgIn.value, inkIn.value, currentPortrait());
+    renderPostcard(tw, bgIn.value, inkIn.value, currentPortrait(), pc.frame);
     downloadPDF(postcardName(tw, 'pdf'));
   });
 }

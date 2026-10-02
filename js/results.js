@@ -13,9 +13,9 @@ function makeThumb() {
 }
 
 // Guarda o postal
-function saveCurrentPostcard(bg, ink, mode, portrait) {
+function saveCurrentPostcard(bg, ink, mode, portrait, frame = 'none') {
   const twin = postcardTwin(plant);
-  renderPostcard(twin, bg, ink, mode === 'portrait' ? portrait : null);
+  renderPostcard(twin, bg, ink, mode === 'portrait' ? portrait : null, frame);
   let thumb;
   try { thumb = makeThumb(); } catch (e) { return false; }
   const list = loadResults();
@@ -29,6 +29,7 @@ function saveCurrentPostcard(bg, ink, mode, portrait) {
     bg,
     ink,
     mode,
+    frame,
     thumb,
   });
   const ok = storeResults(list);
@@ -111,7 +112,7 @@ function resultCard(r, poem, fmt) {
   const redraw = async () => {
     const tw = Plant.fromRecipe(r);
     const portrait = isPortrait ? await loadPortrait(poem.author) : null;
-    renderPostcard(tw, r.bg, r.ink, portrait);
+    renderPostcard(tw, r.bg, r.ink, portrait, r.frame || 'none');
     return tw;
   };
   button('PNG ↓', 'pill small', async () => { const tw = await redraw(); downloadPNG(postcardName(tw, 'png')); });

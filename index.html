@@ -12,7 +12,7 @@
   <meta property="og:type" content="website" />
 
   <!--Ícone-->
-  <link rel="icon" href="favicon.svg?v=11" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=13" type="image/svg+xml" />
 
   <!--Tipografia-->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,7 +28,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!--Estilos-->
-  <link rel="stylesheet" href="style.css?v=11" />
+  <link rel="stylesheet" href="style.css?v=13" />
 </head>
 <body data-theme="light">
   <header id="bar">
@@ -68,6 +68,11 @@
           </div>
 
           <div class="group">
+            <span class="mono label">moldura</span>
+            <div class="frames" id="frames" role="group" aria-label="moldura do postal"></div>
+          </div>
+
+          <div class="group">
             <span class="mono label">cores</span>
             <div class="pickers">
               <label class="picker" id="bgPicker">
@@ -90,8 +95,10 @@
             <span class="mono label">guardar</span>
             <div class="actions">
               <button class="pill" id="saveBtn" type="button">guardar nos resultados ♡</button>
-              <button class="pill" id="dlPng" type="button">exportar PNG ↓</button>
-              <button class="pill" id="dlPdf" type="button">exportar PDF ↓</button>
+              <div class="row2">
+                <button class="pill" id="dlPng" type="button">PNG ↓</button>
+                <button class="pill" id="dlPdf" type="button">PDF ↓</button>
+              </div>
             </div>
           </div>
         </aside>
@@ -197,7 +204,7 @@
         webcam, a planta cresce andar a andar, e em cada andar nascem as palavras
         do poema, que se vão revelando ao lado. Cada nó <span class="mono">~*~</span>
         fecha um verso. No fim, uma flor abre: rosa, margarida, tulipa, girassol,
-        papoila, lavanda, hortênsia, campânula, dente-de-leão ou flor de chavetas.
+        papoila, lavanda, hortênsia, campânula, cravo, lírio, cardo, cerejeira, jacinto, dente-de-leão ou flor de chavetas.
         Cada uma tem a sua maneira de abrir.
       </p>
       <p>
@@ -211,7 +218,7 @@
         Surgem em excerto e em ortografia atualizada:
       </p>
       <p class="poets">
-        Luís de Camões · Almeida Garrett · Antero de Quental · Cesário Verde · Camilo Pessanha ·
+        Luís de Camões · Bocage · Almeida Garrett · Antero de Quental · Cesário Verde · Camilo Pessanha ·
         Mário de Sá-Carneiro · Florbela Espanca · Fernando Pessoa e os seus
         heterónimos, Alberto Caeiro, Ricardo Reis e Álvaro de Campos.
       </p>
@@ -264,26 +271,26 @@
   <div id="handCursor" aria-hidden="true"></div>
 
   <!--Código-->
-  <script src="js/data/poems.js?v=11"></script>
-  <script src="js/config.js?v=11"></script>
-  <script src="js/state.js?v=11"></script>
-  <script src="js/utils.js?v=11"></script>
-  <script src="js/theme.js?v=11"></script>
-  <script src="js/flowers.js?v=11"></script>
-  <script src="js/plant.js?v=11"></script>
-  <script src="js/poem-text.js?v=11"></script>
-  <script src="js/layout.js?v=11"></script>
-  <script src="js/water.js?v=11"></script>
-  <script src="js/hands.js?v=11"></script>
-  <script src="js/garden.js?v=11"></script>
-  <script src="js/postcard.js?v=11"></script>
-  <script src="js/results.js?v=11"></script>
-  <script src="js/ui/modals.js?v=11"></script>
-  <script src="js/ui/poems-menu.js?v=11"></script>
-  <script src="js/ui/poem-form.js?v=11"></script>
-  <script src="js/ui/poem-garden.js?v=11"></script>
-  <script src="js/ui/export-panel.js?v=11"></script>
-  <script src="js/ui/interface.js?v=11"></script>
-  <script src="js/main.js?v=11"></script>
+  <script src="js/data/poems.js?v=13"></script>
+  <script src="js/config.js?v=13"></script>
+  <script src="js/state.js?v=13"></script>
+  <script src="js/utils.js?v=13"></script>
+  <script src="js/theme.js?v=13"></script>
+  <script src="js/flowers.js?v=13"></script>
+  <script src="js/plant.js?v=13"></script>
+  <script src="js/poem-text.js?v=13"></script>
+  <script src="js/layout.js?v=13"></script>
+  <script src="js/water.js?v=13"></script>
+  <script src="js/hands.js?v=13"></script>
+  <script src="js/garden.js?v=13"></script>
+  <script src="js/postcard.js?v=13"></script>
+  <script src="js/results.js?v=13"></script>
+  <script src="js/ui/modals.js?v=13"></script>
+  <script src="js/ui/poems-menu.js?v=13"></script>
+  <script src="js/ui/poem-form.js?v=13"></script>
+  <script src="js/ui/poem-garden.js?v=13"></script>
+  <script src="js/ui/export-panel.js?v=13"></script>
+  <script src="js/ui/interface.js?v=13"></script>
+  <script src="js/main.js?v=13"></script>
 </body>
 </html>

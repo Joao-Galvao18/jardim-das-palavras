@@ -12,6 +12,9 @@ const samePoem = (a, b) => !!a && !!b && (a === b || (a.id && a.id === b.id) ||
 // Flor de cada poema (sempre a mesma)
 function poemFlower(poem) {
   if (poem.flower && FLOWERS[poem.flower]) return poem.flower;
+  // Poemas da lista: flores repartidas por igual
+  const idx = POEMS.findIndex((p) => samePoem(p, poem));
+  if (idx >= 0) return FLOWER_TYPES[(idx * 7 + 3) % FLOWER_TYPES.length];
   const key = `${poem.author}|${poem.title}|${poem.lines[0]}`;
   let h = 0;
   for (const ch of key) h = (h * 31 + ch.codePointAt(0)) >>> 0;

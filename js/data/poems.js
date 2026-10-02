@@ -272,4 +272,195 @@ const POEMS = [
       'Ai! não te amo, não.',
     ],
   },
+  {
+    author: 'Fernando Pessoa', title: 'O Mostrengo', excerpt: true,
+    lines: [
+      'O mostrengo que está no fim do mar',
+      'Na noite de breu ergueu-se a voar;',
+      'À roda da nau voou três vezes,',
+      'Voou três vezes a chiar,',
+    ],
+  },
+  {
+    author: 'Fernando Pessoa', title: 'Ulisses', excerpt: true,
+    lines: [
+      'O mito é o nada que é tudo.',
+      'O mesmo sol que abre os céus',
+      'É um mito brilhante e mudo —',
+      'O corpo morto de Deus,',
+      'Vivo e desnudo.',
+    ],
+  },
+  {
+    author: 'Fernando Pessoa', title: 'D. Sebastião, Rei de Portugal', excerpt: true,
+    lines: [
+      'Louco, sim, louco, porque quis grandeza',
+      'Qual a Sorte a não dá.',
+      'Não coube em mim minha certeza;',
+      'Por isso onde o areal está',
+      'Ficou meu ser que houve, não o que há.',
+    ],
+  },
+  {
+    author: 'Fernando Pessoa', title: 'Ela canta, pobre ceifeira', excerpt: true,
+    lines: [
+      'Ela canta, pobre ceifeira,',
+      'Julgando-se feliz talvez;',
+      'Canta, e ceifa, e a sua voz, cheia',
+      'De alegre e anónima viuvez,',
+    ],
+  },
+  {
+    author: 'Fernando Pessoa', title: 'O menino da sua mãe', excerpt: true,
+    lines: [
+      'No plaino abandonado',
+      'Que a morna brisa aquece,',
+      'De balas trespassado —',
+      'Duas, de lado a lado —,',
+      'Jaz morto, e arrefece.',
+    ],
+  },
+  {
+    author: 'Fernando Pessoa', title: 'Abdicação', excerpt: true,
+    lines: [
+      'Toma-me, ó noite eterna, nos teus braços',
+      'E chama-me teu filho… eu sou um rei',
+      'que voluntariamente abandonei',
+      'O meu trono de sonhos e cansaços.',
+    ],
+  },
+  {
+    author: 'Álvaro de Campos', title: 'Lisbon Revisited (1923)', excerpt: true,
+    lines: [
+      'Não: não quero nada.',
+      'Já disse que não quero nada.',
+      'Não me venham com conclusões!',
+      'A única conclusão é morrer.',
+    ],
+  },
+  {
+    author: 'Álvaro de Campos', title: 'Aniversário', excerpt: true,
+    lines: [
+      'No tempo em que festejavam o dia dos meus anos,',
+      'Eu era feliz e ninguém estava morto.',
+    ],
+  },
+  {
+    author: 'Alberto Caeiro', title: 'O Guardador de Rebanhos, IX', excerpt: true,
+    lines: [
+      'Sou um guardador de rebanhos.',
+      'O rebanho é os meus pensamentos',
+      'E os meus pensamentos são todos sensações.',
+    ],
+  },
+  {
+    author: 'Alberto Caeiro', title: 'O Guardador de Rebanhos, V', excerpt: true,
+    lines: [
+      'Há metafísica bastante em não pensar em nada.',
+      'O que penso eu do mundo?',
+      'Sei lá o que penso do mundo!',
+      'Se eu adoecesse pensaria nisso.',
+    ],
+  },
+  {
+    author: 'Ricardo Reis', title: 'Segue o teu destino', excerpt: true,
+    lines: [
+      'Segue o teu destino,',
+      'Rega as tuas plantas,',
+      'Ama as tuas rosas.',
+      'O resto é a sombra',
+      'De árvores alheias.',
+    ],
+  },
+  {
+    author: 'Ricardo Reis', title: 'Prefiro rosas, meu amor, à pátria', excerpt: true,
+    lines: [
+      'Prefiro rosas, meu amor, à pátria,',
+      'E antes magnólias amo',
+      'Que a glória e a virtude.',
+    ],
+  },
+  {
+    author: 'Luís de Camões', title: 'Erros meus, má fortuna, amor ardente', excerpt: true,
+    lines: [
+      'Erros meus, má fortuna, amor ardente',
+      'Em minha perdição se conjuraram;',
+      'Os erros e a fortuna sobejavam,',
+      'Que para mim bastava amor somente.',
+    ],
+  },
+  {
+    author: 'Luís de Camões', title: 'Descalça vai para a fonte', excerpt: true,
+    lines: [
+      'Descalça vai para a fonte',
+      'Leonor pela verdura;',
+      'Vai formosa, e não segura.',
+    ],
+  },
+  {
+    author: 'Florbela Espanca', title: 'Fumo', excerpt: true,
+    lines: [
+      'Longe de ti são ermos os caminhos,',
+      'Longe de ti não há luar nem rosas;',
+      'Longe de ti há noites silenciosas,',
+      'Há dias sem calor, beirais sem ninhos!',
+    ],
+  },
+  {
+    author: 'Florbela Espanca', title: 'A minha Dor', excerpt: true,
+    lines: [
+      'A minha Dor é um convento ideal',
+      'Cheio de claustros, sombras, arcarias,',
+      'Aonde a pedra em convulsões sombrias',
+      'Tem linhas dum requinte escultural.',
+    ],
+  },
+  {
+    author: 'Antero de Quental', title: 'Tormento do Ideal', excerpt: true,
+    lines: [
+      'Conheci a Beleza que não morre',
+      'E fiquei triste.',
+    ],
+  },
+  {
+    author: 'Antero de Quental', title: 'Hino à Razão', excerpt: true,
+    lines: [
+      'Razão, irmã do Amor e da Justiça,',
+      'Mais uma vez escuta a minha prece.',
+    ],
+  },
+  {
+    author: 'Cesário Verde', title: 'De Tarde', excerpt: true,
+    lines: [
+      'Naquele pic-nic de burguesas,',
+      'Houve uma coisa simplesmente bela,',
+      'E que, sem ter história nem grandezas,',
+      'Em todo o caso dava uma aguarela.',
+    ],
+  },
+  {
+    author: 'Mário de Sá-Carneiro', title: 'Fim', excerpt: false,
+    lines: [
+      'Quando eu morrer batam em latas,',
+      'Rompam aos saltos e aos pinotes,',
+      'Façam estalar no ar chicotes,',
+      'Chamem palhaços e acrobatas!',
+    ],
+  },
+  {
+    author: 'Almeida Garrett', title: 'Este inferno de amar', excerpt: true,
+    lines: [
+      'Este inferno de amar — como eu amo! —',
+      'Quem mo pôs aqui n’alma… quem foi?',
+      'Esta chama que alenta e consome,',
+      'Que é a vida — e que a vida destrói —',
+    ],
+  },
+  {
+    author: 'Bocage', title: 'Já Bocage não sou!', excerpt: true,
+    lines: [
+      'Já Bocage não sou!… À cova escura',
+      'Meu estro vai parar desfeito em vento…',
+    ],
+  },
 ];

@@ -65,7 +65,7 @@ function ensurePostcard() {
 }
 
 // Desenha o postal
-function renderPostcard(twin, bgHex, inkHex, portrait = null) {
+function renderPostcard(twin, bgHex, inkHex, portrait = null, frame = 'none') {
   ensurePostcard();
   const g = postcard;
   const ink = hexToRgb(inkHex);
@@ -108,7 +108,35 @@ function renderPostcard(twin, bgHex, inkHex, portrait = null) {
 
   // Rodapé
   glyph(g, 'jardim das palavras', PC_W / 2, PC_H - 44, { font: MONO, size: 11, col: P.grey });
+
+  // Moldura
+  drawFrame(g, P, frame);
   g.pop();
+}
+
+// Moldura ASCII à volta do postal
+function drawFrame(g, P, key) {
+  const f = FRAMES[key];
+  if (!f || !f.h) return;
+  const m = 24;
+  const x0 = m, x1 = PC_W - m, y0 = m, y1 = PC_H - m;
+  const nx = floor((x1 - x0) / f.hs), ny = floor((y1 - y0) / f.vs);
+  const sx = (x1 - x0) / nx, sy = (y1 - y0) / ny;
+  const pick = (c, i) => (Array.isArray(c) ? c[i % c.length] : c);
+  const put = (ch, x, y) => glyph(g, ch, x, y + 4, { font: MONO, size: 13, col: P.ink, alpha: 210 });
+
+  // Cima e baixo
+  for (let i = 1; i < nx; i++) {
+    put(pick(f.h, i), x0 + i * sx, y0);
+    put(pick(f.h, i), x0 + i * sx, y1);
+  }
+  // Lados
+  for (let j = 1; j < ny; j++) {
+    put(f.v, x0, y0 + j * sy);
+    put(f.v2 || f.v, x1, y0 + j * sy);
+  }
+  // Cantos
+  for (const [x, y] of [[x0, y0], [x1, y0], [x0, y1], [x1, y1]]) put(f.c, x, y);
 }
 
 // Downloads

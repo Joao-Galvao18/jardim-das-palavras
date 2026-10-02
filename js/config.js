@@ -36,6 +36,11 @@ const FLOWERS = {
   papoila:   'papoila',
   hortensia: 'hortênsia',
   campanula: 'campânula',
+  cravo:     'cravo',
+  lirio:     'lírio',
+  cardo:     'cardo',
+  cerejeira: 'cerejeira',
+  jacinto:   'jacinto',
 };
 const FLOWER_TYPES = Object.keys(FLOWERS);
 
@@ -60,6 +65,16 @@ const MAX_AUTHOR_CHARS = 28;
 // Postal A5
 const PC_W = 1240, PC_H = 874;
 
+// Molduras ASCII do postal
+const FRAMES = {
+  none:     { label: 'sem' },
+  linha:    { label: '+--+', h: '-', v: '|', c: '+', hs: 8, vs: 13 },
+  pontos:   { label: '· · ·', h: '·', v: '·', c: '·', hs: 12, vs: 12 },
+  ondas:    { label: '~~~', h: '~', v: '(', v2: ')', c: '*', hs: 8, vs: 14 },
+  flores:   { label: '~*~', h: ['~', '*', '~', ' '], v: '*', c: '@', hs: 8, vs: 16 },
+  chavetas: { label: '{ }', h: ['{', '}'], v: '{', v2: '}', c: '+', hs: 8, vs: 13 },
+};
+
 // Pares de cores sugeridos
 const POSTCARD_SWATCHES = [
   ['#ffffff', '#111111'], ['#0a0a0a', '#eceae4'], ['#f3eee4', '#1f3a5f'],
@@ -79,6 +94,7 @@ const PORTRAIT_PAGES = {
   'Mário de Sá-Carneiro': 'Mário_de_Sá-Carneiro',
   'Antero de Quental': 'Antero_de_Quental',
   'Almeida Garrett': 'Almeida_Garrett',
+  'Bocage': 'Manuel_Maria_Barbosa_du_Bocage',
 };
 const PORTRAIT_DARKEN = 0.5;
 const PORTRAIT_SATURATION = 50;

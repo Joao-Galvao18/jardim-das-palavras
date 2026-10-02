@@ -362,6 +362,27 @@ canvas {
   text-align: center;
 }
 
+/* PNG e PDF lado a lado */
+#export .row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Molduras */
+#export .frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+#export .frame-opt {
+  min-width: 38px;
+  padding: 5px 9px;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
 /* Fundo */
 #export .seg {
   display: flex;

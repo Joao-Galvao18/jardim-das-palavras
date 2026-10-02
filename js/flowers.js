@@ -14,7 +14,7 @@ function drawFlower(g, P, flower, o, A, t) {
   };
 
   // Botão comum
-  if (!['tulipa', 'papoila', 'campanula', 'lavanda'].includes(flower.type)) {
+  if (!['tulipa', 'papoila', 'campanula', 'lavanda', 'cerejeira', 'jacinto'].includes(flower.type)) {
     const budA = constrain(1 - o * 2.5, 0, 1);
     put('(', -6, -14, 20, budA, SERIF);
     put(')', 6, -14, 20, budA, SERIF);
@@ -337,6 +337,139 @@ function drawFlower(g, P, flower, o, A, t) {
           g.pop();
         });
       });
+      break;
+    }
+
+    // Cravo
+    case 'cravo': {
+      const rings = [
+        { r: 8, n: 7, ch: '@' }, { r: 16, n: 11, ch: 'w' }, { r: 25, n: 15, ch: 'v' },
+        { r: 34, n: 19, ch: 'w' }, { r: 43, n: 23, ch: '~' },
+      ];
+      rings.forEach((ring, j) => {
+        const ra = smooth(constrain(o * rings.length * 1.1 - j, 0, 1));
+        if (ra <= 0) return;
+        const r = ring.r * (0.55 + 0.45 * ra);
+        for (let i = 0; i < ring.n; i++) {
+          const a = (i / ring.n) * TWO_PI + j * 0.4 + t * 0.01;
+          put(ring.ch, cos(a) * r, cy + 4 + sin(a) * r * 0.72, 12 + j, ra);
+        }
+      });
+      put('\\', -9, -30, 15, 1);
+      put('/', 9, -30, 15, 1);
+      put('V', 0, -22, 13, 1);
+      put('|', 0, -10, 13, 1);
+      break;
+    }
+
+    // Lírio
+    case 'lirio': {
+      const N = 6, ly = -58;
+      for (let i = 0; i < N; i++) {
+        const closed = -HALF_PI + (i - (N - 1) / 2) * 0.07;
+        const open = map(i, 0, N - 1, -PI - 0.25, 0.25);
+        const a = lerp(closed, open, e);
+        for (const rr of [10, 20, 30, 38]) put(dirChar(a), cos(a) * rr, ly + sin(a) * rr, 15, 1);
+        if (e > 0.5) put(cos(a) < 0 ? '(' : ')', cos(a) * 46, ly + sin(a) * 46 + 4, 16, map(e, 0.5, 1, 0, 1), SERIF);
+      }
+      // Estames
+      if (o > 0.2) {
+        g.stroke(ink[0], ink[1], ink[2], A * 0.6 * e);
+        g.strokeWeight(0.7);
+        for (let i = 0; i < 6; i++) {
+          const a = -HALF_PI + (i - 2.5) * 0.18;
+          g.line(0, ly, cos(a) * 30 * e, ly + sin(a) * 30 * e);
+        }
+        g.noStroke();
+        for (let i = 0; i < 6; i++) {
+          const a = -HALF_PI + (i - 2.5) * 0.18;
+          put('o', cos(a) * 32 * e, ly + sin(a) * 32 * e, 9, e);
+        }
+      }
+      put('\\', -8, -10, 14, 1);
+      put('/', 8, -10, 14, 1);
+      break;
+    }
+
+    // Cardo
+    case 'cardo': {
+      const by = -28;
+      // Bolbo espinhoso
+      ['xxx', 'x#x#x', '#x#x#', 'x#x#x', 'xxx'].forEach((row, r) => {
+        put(row, 0, by + (r - 2) * 9, 13, 1);
+      });
+      put('<', -26, by, 14, 1);
+      put('>', 26, by, 14, 1);
+      // Coroa de espinhos que cresce para cima
+      const N = 17;
+      for (let i = 0; i < N; i++) {
+        const pe = smooth(constrain((o - (i / N) * 0.35) / 0.5, 0, 1));
+        if (pe <= 0) continue;
+        const a = map(i, 0, N - 1, -PI * 0.86, -PI * 0.14);
+        const L = (22 + rnd(i + 41) * 30) * pe;
+        const sx = cos(a) * 14, sy = by - 18 + sin(a) * 6;
+        for (const f of [0.35, 0.7, 1]) put(dirChar(a), sx + cos(a) * L * f, sy + sin(a) * L * f, 13, pe);
+        put('·', sx + cos(a) * (L + 7), sy + sin(a) * (L + 7), 12, pe * 0.8);
+      }
+      break;
+    }
+
+    // Cerejeira
+    case 'cerejeira': {
+      const branches = [
+        { p: [0, 0, -8, -60, 34, -104, 76, -110], buds: [0.32, 0.5, 0.66, 0.82, 1] },
+        { p: [0, -46, -26, -78, -48, -104, -72, -108], buds: [0.4, 0.7, 1] },
+      ];
+      branches.forEach((br, k) => {
+        const [x0, y0, x1, y1, x2, y2, x3, y3] = br.p;
+        g.noFill();
+        g.stroke(ink[0], ink[1], ink[2], A * 0.9);
+        g.strokeWeight(1.2 - k * 0.3);
+        g.bezier(x0, y0, x1, y1, x2, y2, x3, y3);
+        g.noStroke();
+        br.buds.forEach((u, i) => {
+          const ba = smooth(constrain((o * 1.4 - u * 0.9 - k * 0.1) / 0.25, 0, 1));
+          const bx = bezierPoint(x0, x1, x2, x3, u);
+          const byy = bezierPoint(y0, y1, y2, y3, u) - 6;
+          if (ba < 0.3) { put('·', bx, byy, 11, 1); return; }
+          const r = 7 * ba;
+          for (let p = 0; p < 5; p++) {
+            const a = -HALF_PI + p * (TWO_PI / 5) + i;
+            put('o', bx + cos(a) * r, byy + sin(a) * r, 10 * ba + 2, ba);
+          }
+          put('*', bx, byy, 11, ba);
+        });
+      });
+      // Pétalas a cair
+      if (o > 0.8) {
+        const fa = map(o, 0.8, 1, 0, 1);
+        for (let i = 0; i < 5; i++) {
+          const fy = ((t * 10 + rnd(i + 61) * 90) % 90) - 100;
+          put(i % 2 ? ',' : "'", 20 + rnd(i + 71) * 60 + sin(t + i) * 5, fy + 40, 11, fa * 0.6);
+        }
+      }
+      break;
+    }
+
+    // Jacinto
+    case 'jacinto': {
+      const rows = 12;
+      g.stroke(ink[0], ink[1], ink[2], A);
+      g.strokeWeight(1);
+      g.line(0, 0, 0, -18);
+      g.noStroke();
+      for (let r = 0; r < rows; r++) {
+        const u = r / rows;
+        const y = -24 - r * 9;
+        const w = 4 + 12 * sin(PI * (0.2 + 0.7 * u));
+        const ra = constrain((o * 1.4 - u) / 0.25, 0, 1);
+        if (ra < 0.5) { put(':', 0, y, 11, 0.6); continue; }
+        const off = r % 2 ? w * 0.5 : 0;
+        for (const c of [-1, 0, 1]) {
+          put(c === 0 ? '*' : 'o', c * w + off * (c === 0 ? 1 : 0), y, c === 0 ? 12 : 11, ra);
+        }
+      }
+      put('^', 0, -24 - rows * 9, 11, e);
       break;
     }
   }
