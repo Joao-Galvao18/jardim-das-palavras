@@ -12,8 +12,13 @@ function setupExportPanel() {
   const pc = { mode: 'color', img: null, frame: 'none' };
   const NO_PORTRAIT = 'sem retrato disponível para este autor';
 
+  const pdfBtn = document.getElementById('dlPdf');
+  const preview = document.getElementById('preview');
+
   // Retrato atual
   const currentPortrait = () => (pc.mode === 'portrait' ? pc.img : null);
+  // Cor de fundo (nenhuma se for transparente)
+  const currentBg = () => (pc.mode === 'clear' ? null : bgIn.value);
 
   // Guardar
   // Botão guardar
@@ -27,7 +32,7 @@ function setupExportPanel() {
 
   // Redesenha a pré-visualização
   const refresh = () => {
-    renderPostcard(postcardTwin(plant), bgIn.value, inkIn.value, currentPortrait(), pc.frame);
+    renderPostcard(postcardTwin(plant), currentBg(), inkIn.value, currentPortrait(), pc.frame);
     updateSaveBtn();
   };
 
@@ -76,7 +81,10 @@ function setupExportPanel() {
   const setMode = (mode) => {
     pc.mode = mode;
     modeBtns.forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
-    document.getElementById('bgPicker').classList.toggle('off', mode === 'portrait');
+    document.getElementById('bgPicker').classList.toggle('off', mode !== 'color');
+    preview.classList.toggle('clear', mode === 'clear');
+    pdfBtn.disabled = mode === 'clear';
+    pdfBtn.title = mode === 'clear' ? 'o PDF não guarda transparência' : '';
   };
 
   modeBtns.forEach((b) => b.addEventListener('click', () => {
@@ -86,6 +94,14 @@ function setupExportPanel() {
     if (b.dataset.mode === 'color') {
       setMode('color');
       note.textContent = portraitBtn.disabled ? NO_PORTRAIT : '';
+      refresh();
+      return;
+    }
+
+    // Transparente
+    if (b.dataset.mode === 'clear') {
+      setMode('clear');
+      note.textContent = 'fundo transparente · só em PNG';
       refresh();
       return;
     }
@@ -145,7 +161,7 @@ function setupExportPanel() {
   // Guardar e exportar
   saveBtn.addEventListener('click', () => {
     if (saveBtn.disabled) return;
-    if (saveCurrentPostcard(bgIn.value, inkIn.value, pc.mode, pc.img, pc.frame)) {
+    if (saveCurrentPostcard(currentBg(), inkIn.value, pc.mode, pc.img, pc.frame)) {
       plant.savedKeys = plant.savedKeys || new Set();
       plant.savedKeys.add(saveKey());
       updateSaveBtn();
@@ -157,15 +173,15 @@ function setupExportPanel() {
 
   document.getElementById('dlPng').addEventListener('click', () => {
     const tw = postcardTwin(plant);
-    renderPostcard(tw, bgIn.value, inkIn.value, currentPortrait(), pc.frame);
+    renderPostcard(tw, currentBg(), inkIn.value, currentPortrait(), pc.frame);
     downloadPNG(postcardName(tw, 'png'));
   });
 
-  const pdfBtn = document.getElementById('dlPdf');
   if (!window.jspdf) pdfBtn.style.display = 'none';
   pdfBtn.addEventListener('click', () => {
+    if (pdfBtn.disabled) return;
     const tw = postcardTwin(plant);
-    renderPostcard(tw, bgIn.value, inkIn.value, currentPortrait(), pc.frame);
+    renderPostcard(tw, currentBg(), inkIn.value, currentPortrait(), pc.frame);
     downloadPDF(postcardName(tw, 'pdf'));
   });
 }

@@ -54,7 +54,7 @@ canvas {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px 28px;
   padding: 18px 22px;
   font-family: var(--mono);
@@ -72,8 +72,15 @@ canvas {
 #bar .right {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 22px;
+}
+
+/* Separador do tema */
+#bar .sep {
+  width: 1px;
+  height: 12px;
+  background: var(--line);
 }
 
 #bar .brand {
@@ -227,13 +234,8 @@ canvas {
   pointer-events: auto;
 }
 
-/* Fechar (à direita do conteúdo, visível ao fazer scroll) */
+/* Fechar */
 .modal .close {
-  position: sticky;
-  top: 24px;
-  z-index: 2;
-  display: block;
-  margin: 0 0 22px auto;
   padding: 6px 0;
   font-family: var(--mono);
   font-weight: 300;
@@ -243,16 +245,23 @@ canvas {
 .modal .wrap {
   max-width: 1040px;
   margin: 0 auto;
-  padding: 24px 24px 60px;
+  padding: 0 24px 60px;
 }
 
+/* Cabeçalho fixo: título à esquerda, ações e fechar à direita */
 .modal .head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
+  align-items: center;
+  gap: 12px 24px;
   margin-bottom: 18px;
+  padding: 20px 0 14px;
+  background: var(--paper);
+  transition: background 0.6s ease;
 }
 
 .modal .title {
@@ -279,7 +288,7 @@ canvas {
   height: 100vh;
   height: 100dvh;
   box-sizing: border-box;
-  padding: 20px 24px 24px;
+  padding: 0 24px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -287,6 +296,11 @@ canvas {
 #export .head {
   flex: none;
   margin-bottom: 10px;
+}
+
+/* Fundo transparente (xadrez por trás) */
+#export .preview.clear canvas {
+  background: repeating-conic-gradient(color-mix(in srgb, var(--line) 45%, transparent) 0 25%, transparent 0 50%) 0 0 / 16px 16px;
 }
 
 /* Postal e controlos */
@@ -504,6 +518,11 @@ canvas {
   border: 1px solid var(--line);
 }
 
+/* Postal transparente */
+#results .card.clear img {
+  background: repeating-conic-gradient(color-mix(in srgb, var(--line) 45%, transparent) 0 25%, transparent 0 50%) 0 0 / 14px 14px;
+}
+
 #results .card .t {
   font-family: var(--serif);
   font-style: italic;
@@ -702,11 +721,25 @@ canvas {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 22px;
+  margin-left: auto;
+}
+
+/* Pesquisa e vista lado a lado */
+.tools-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tools-row .search {
+  flex: 1;
 }
 
 #poemView {
   display: flex;
+  flex: none;
   gap: 6px;
 }
 
@@ -957,7 +990,7 @@ canvas {
 #about article {
   max-width: 580px;
   margin: 0 auto;
-  padding: 24px 24px 80px;
+  padding: 0 24px 80px;
   font-family: var(--serif);
   font-size: 19px;
   line-height: 1.55;
@@ -1048,7 +1081,7 @@ button {
     height: auto;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: 14px 18px 32px;
+    padding: 0 18px 32px;
   }
 
   #export .body {
@@ -1076,7 +1109,11 @@ button {
   }
 
   .modal .wrap {
-    padding: 14px 18px 40px;
+    padding: 0 18px 40px;
+  }
+
+  .modal .head {
+    padding: 14px 0 12px;
   }
 
   .modal .title {
@@ -1094,10 +1131,6 @@ button {
 }
 
 @media (max-width: 560px) {
-  .modal .close {
-    top: 12px;
-  }
-
   /* Filtros numa linha com scroll, para o jardim ficar à vista */
   .chips {
     flex-wrap: nowrap;
@@ -1121,8 +1154,35 @@ button {
     font-size: 12px;
   }
 
-  #bar .left {
+  #bar .left,
+  #bar .right {
     gap: 14px;
+  }
+
+  .tools-row {
+    flex-wrap: wrap;
+  }
+
+  .tools-row .search {
+    flex-basis: 100%;
+  }
+
+  /* Cabeçalho numa só linha */
+  .modal .head {
+    flex-wrap: nowrap;
+  }
+
+  .head-actions {
+    flex-wrap: nowrap;
+    gap: 14px;
+  }
+
+  .head-actions .mono:not(.close) {
+    display: none;
+  }
+
+  #writeBtn .long {
+    display: none;
   }
 
   #exportBtn {
@@ -1130,7 +1190,7 @@ button {
   }
 
   #about article {
-    padding: 14px 18px 60px;
+    padding: 0 18px 60px;
     font-size: 18px;
   }
 

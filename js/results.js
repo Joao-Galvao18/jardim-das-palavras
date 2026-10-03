@@ -4,12 +4,12 @@ const loadResults = () => loadList(STORE_KEY);
 const storeResults = (list) => storeList(STORE_KEY, list);
 
 // Miniatura
-function makeThumb() {
+function makeThumb(clear = false) {
   const c = document.createElement('canvas');
   c.width = 620;
   c.height = 437;
   c.getContext('2d').drawImage(postcard.elt, 0, 0, c.width, c.height);
-  return c.toDataURL('image/jpeg', 0.82);
+  return clear ? c.toDataURL('image/png') : c.toDataURL('image/jpeg', 0.82);
 }
 
 // Guarda o postal
@@ -17,7 +17,7 @@ function saveCurrentPostcard(bg, ink, mode, portrait, frame = 'none') {
   const twin = postcardTwin(plant);
   renderPostcard(twin, bg, ink, mode === 'portrait' ? portrait : null, frame);
   let thumb;
-  try { thumb = makeThumb(); } catch (e) { return false; }
+  try { thumb = makeThumb(mode === 'clear'); } catch (e) { return false; }
   const list = loadResults();
   list.unshift({
     id: Date.now().toString(36) + floor(random(1e4)).toString(36),
@@ -70,8 +70,9 @@ function renderResults() {
 // Cartão de um postal
 function resultCard(r, poem, fmt) {
   const isPortrait = r.mode === 'portrait';
+  const isClear = r.mode === 'clear';
   const card = document.createElement('div');
-  card.className = 'card';
+  card.className = isClear ? 'card clear' : 'card';
 
   const img = document.createElement('img');
   img.src = r.thumb;
@@ -86,10 +87,11 @@ function resultCard(r, poem, fmt) {
   meta.className = 'meta';
   const info = document.createElement('span');
   info.className = 'mono';
-  info.textContent = `${poem.author} · ${FLOWERS[r.flower.type]}${isPortrait ? ' · retrato' : ''} · ${fmt.format(r.created)}`;
+  const tag = isPortrait ? ' · retrato' : isClear ? ' · transparente' : '';
+  info.textContent = `${poem.author} · ${FLOWERS[r.flower.type]}${tag} · ${fmt.format(r.created)}`;
   const dots = document.createElement('span');
   dots.className = 'dots';
-  for (const c of isPortrait ? [r.ink] : [r.bg, r.ink]) {
+  for (const c of isPortrait || isClear ? [r.ink] : [r.bg, r.ink]) {
     const d = document.createElement('span');
     d.style.background = c;
     dots.appendChild(d);
@@ -116,7 +118,7 @@ function resultCard(r, poem, fmt) {
     return tw;
   };
   button('PNG ↓', 'pill small', async () => { const tw = await redraw(); downloadPNG(postcardName(tw, 'png')); });
-  if (window.jspdf) button('PDF ↓', 'pill small', async () => { const tw = await redraw(); downloadPDF(postcardName(tw, 'pdf')); });
+  if (window.jspdf && !isClear) button('PDF ↓', 'pill small', async () => { const tw = await redraw(); downloadPDF(postcardName(tw, 'pdf')); });
   button('apagar', 'pill small ghost', async () => {
     const yes = await confirmDialog({
       title: 'Apagar este postal?',

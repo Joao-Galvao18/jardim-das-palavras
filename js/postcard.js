@@ -64,16 +64,18 @@ function ensurePostcard() {
   }).observe(postcard.elt);
 }
 
-// Desenha o postal
+// Desenha o postal (sem bgHex o fundo fica transparente)
 function renderPostcard(twin, bgHex, inkHex, portrait = null, frame = 'none') {
   ensurePostcard();
   const g = postcard;
   const ink = hexToRgb(inkHex);
-  const bg = portrait ? [20, 20, 20] : hexToRgb(bgHex);
-  const P = { paper: bg, ink, grey: lerpArr(ink, bg, 0.4), faint: lerpArr(ink, bg, 0.75), knock: !portrait };
+  const clear = !portrait && !bgHex;
+  const bg = portrait ? [20, 20, 20] : clear ? (luminance(inkHex) < 0.5 ? [255, 255, 255] : [0, 0, 0]) : hexToRgb(bgHex);
+  const P = { paper: bg, ink, grey: lerpArr(ink, bg, 0.4), faint: lerpArr(ink, bg, 0.75), knock: !portrait && !clear };
 
   g.push();
-  g.background(bg[0], bg[1], bg[2]);
+  if (clear) g.clear();
+  else g.background(bg[0], bg[1], bg[2]);
 
   // Retrato a cobrir o postal
   if (portrait) {

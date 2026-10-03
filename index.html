@@ -12,7 +12,7 @@
   <meta property="og:type" content="website" />
 
   <!--Ícone-->
-  <link rel="icon" href="favicon.svg?v=25" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=28" type="image/svg+xml" />
 
   <!--Tipografia-->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,20 +28,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!--Estilos-->
-  <link rel="stylesheet" href="style.css?v=25" />
+  <link rel="stylesheet" href="style.css?v=28" />
 </head>
 <body data-theme="light">
   <header id="bar">
     <div class="left">
       <span class="brand">jardim das palavras</span>
       <button id="reset" class="link" type="button">outro poema ↻</button>
+    </div>
+    <nav class="right">
       <button id="poemsBtn" class="link" type="button">poemas</button>
       <button id="resultsBtn" class="link" type="button">resultados</button>
       <button id="aboutBtn" class="link" type="button">sobre</button>
-    </div>
-    <div class="right">
+      <span class="sep" aria-hidden="true"></span>
       <button id="theme" class="link" type="button">◐ escuro</button>
-    </div>
+    </nav>
   </header>
 
   <button id="exportBtn" class="pill" type="button">exportar postal A5 ↓</button>
@@ -49,9 +50,11 @@
   <!--Exportar-->
   <section id="export" class="modal" aria-hidden="true">
     <div class="wrap">
-      <button class="link close" data-close type="button">fechar ×</button>
       <div class="head">
         <span class="title">o teu postal</span>
+        <div class="head-actions">
+          <button class="link close" data-close type="button">fechar ×</button>
+        </div>
       </div>
       <div class="body">
         <div class="preview" id="preview"></div>
@@ -62,6 +65,7 @@
             <span class="mono label">fundo</span>
             <div class="seg" id="bgMode" role="group" aria-label="tipo de fundo">
               <button class="pill small active" type="button" data-mode="color">cor</button>
+              <button class="pill small" type="button" data-mode="clear">transparente</button>
               <button class="pill small" type="button" data-mode="portrait">retrato do poeta</button>
             </div>
             <span class="mono note" id="portraitNote" aria-live="polite"></span>
@@ -109,20 +113,22 @@
   <!--Poemas-->
   <section id="poems" class="modal" aria-hidden="true">
     <div class="wrap">
-      <button class="link close" data-close type="button">fechar ×</button>
       <div class="head">
         <span class="title">poemas</span>
         <div class="head-actions">
+          <button class="pill small" id="writeBtn" type="button">+ escrever<span class="long"> o teu poema</span></button>
+          <button class="link close" data-close type="button">fechar ×</button>
+        </div>
+      </div>
+      <div class="poems-tools">
+        <div class="tools-row">
+          <input type="search" id="poemSearch" class="search" autocomplete="off" spellcheck="false"
+                 placeholder="procurar por título, poeta ou verso" aria-label="procurar poemas" />
           <div class="seg" id="poemView" role="group" aria-label="vista">
             <button class="pill small active" type="button" data-view="garden" aria-pressed="true">jardim</button>
             <button class="pill small" type="button" data-view="list" aria-pressed="false">lista</button>
           </div>
-          <button class="pill" id="writeBtn" type="button">+ escrever o teu poema</button>
         </div>
-      </div>
-      <div class="poems-tools">
-        <input type="search" id="poemSearch" class="search" autocomplete="off" spellcheck="false"
-               placeholder="procurar por título, poeta ou verso" aria-label="procurar poemas" />
         <div class="chips" id="poemChips" role="group" aria-label="filtrar por poeta"></div>
         <span class="mono" id="poemCount" aria-live="polite"></span>
       </div>
@@ -138,10 +144,12 @@
   <!--Escrever um poema-->
   <section id="write" class="modal" aria-hidden="true">
     <form class="wrap" id="writeForm" novalidate>
-      <button class="link close" data-close type="button">fechar ×</button>
       <div class="head">
         <span class="title">o teu poema</span>
-        <span class="mono" id="wLimits"></span>
+        <div class="head-actions">
+          <span class="mono" id="wLimits"></span>
+          <button class="link close" data-close type="button">fechar ×</button>
+        </div>
       </div>
       <div class="write-grid">
         <div class="write-col">
@@ -174,10 +182,12 @@
   <!--Resultados-->
   <section id="results" class="modal" aria-hidden="true">
     <div class="wrap">
-      <button class="link close" data-close type="button">fechar ×</button>
       <div class="head">
         <span class="title">resultados</span>
-        <span class="mono">postais guardados neste navegador</span>
+        <div class="head-actions">
+          <span class="mono">postais guardados neste navegador</span>
+          <button class="link close" data-close type="button">fechar ×</button>
+        </div>
       </div>
       <div class="grid" id="resultsGrid"></div>
     </div>
@@ -186,8 +196,12 @@
   <!--Sobre-->
   <section id="about" class="modal" aria-hidden="true">
     <article>
-      <button class="link close" data-close type="button">fechar ×</button>
-      <div class="mono">open call · DZAIN IT</div>
+      <div class="head">
+        <span class="mono">open call · DZAIN IT</span>
+        <div class="head-actions">
+          <button class="link close" data-close type="button">fechar ×</button>
+        </div>
+      </div>
       <h1>Jardim<em>das Palavras</em></h1>
       <div class="mono">poesia que cresce connosco</div>
 
@@ -268,27 +282,27 @@
   <div id="handCursor" aria-hidden="true"></div>
 
   <!--Código-->
-  <script src="js/data/poems.js?v=25"></script>
-  <script src="js/config.js?v=25"></script>
-  <script src="js/state.js?v=25"></script>
-  <script src="js/utils.js?v=25"></script>
-  <script src="js/theme.js?v=25"></script>
-  <script src="js/flowers.js?v=25"></script>
-  <script src="js/frames.js?v=25"></script>
-  <script src="js/plant.js?v=25"></script>
-  <script src="js/poem-text.js?v=25"></script>
-  <script src="js/layout.js?v=25"></script>
-  <script src="js/water.js?v=25"></script>
-  <script src="js/hands.js?v=25"></script>
-  <script src="js/garden.js?v=25"></script>
-  <script src="js/postcard.js?v=25"></script>
-  <script src="js/results.js?v=25"></script>
-  <script src="js/ui/modals.js?v=25"></script>
-  <script src="js/ui/poems-menu.js?v=25"></script>
-  <script src="js/ui/poem-form.js?v=25"></script>
-  <script src="js/ui/poem-garden.js?v=25"></script>
-  <script src="js/ui/export-panel.js?v=25"></script>
-  <script src="js/ui/interface.js?v=25"></script>
-  <script src="js/main.js?v=25"></script>
+  <script src="js/data/poems.js?v=28"></script>
+  <script src="js/config.js?v=28"></script>
+  <script src="js/state.js?v=28"></script>
+  <script src="js/utils.js?v=28"></script>
+  <script src="js/theme.js?v=28"></script>
+  <script src="js/flowers.js?v=28"></script>
+  <script src="js/frames.js?v=28"></script>
+  <script src="js/plant.js?v=28"></script>
+  <script src="js/poem-text.js?v=28"></script>
+  <script src="js/layout.js?v=28"></script>
+  <script src="js/water.js?v=28"></script>
+  <script src="js/hands.js?v=28"></script>
+  <script src="js/garden.js?v=28"></script>
+  <script src="js/postcard.js?v=28"></script>
+  <script src="js/results.js?v=28"></script>
+  <script src="js/ui/modals.js?v=28"></script>
+  <script src="js/ui/poems-menu.js?v=28"></script>
+  <script src="js/ui/poem-form.js?v=28"></script>
+  <script src="js/ui/poem-garden.js?v=28"></script>
+  <script src="js/ui/export-panel.js?v=28"></script>
+  <script src="js/ui/interface.js?v=28"></script>
+  <script src="js/main.js?v=28"></script>
 </body>
 </html>
