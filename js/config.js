@@ -65,14 +65,14 @@ const MAX_AUTHOR_CHARS = 28;
 // Postal A5
 const PC_W = 1240, PC_H = 874;
 
-// Molduras ASCII do postal
+// Molduras do postal
 const FRAMES = {
-  none:     { label: 'sem' },
-  linha:    { label: '+--+', h: '-', v: '|', c: '+', hs: 8, vs: 13 },
-  pontos:   { label: '· · ·', h: '·', v: '·', c: '·', hs: 12, vs: 12 },
-  ondas:    { label: '~~~', h: '~', v: '(', v2: ')', c: '*', hs: 8, vs: 14 },
-  flores:   { label: '~*~', h: ['~', '*', '~', ' '], v: '*', c: '@', hs: 8, vs: 16 },
-  chavetas: { label: '{ }', h: ['{', '}'], v: '{', v2: '}', c: '+', hs: 8, vs: 13 },
+  none:      { label: 'sem' },
+  classica:  { label: 'clássica' },
+  arabesco:  { label: 'arabesco' },
+  vinhas:    { label: 'vinhas' },
+  arco:      { label: 'arco' },
+  filigrana: { label: 'filigrana' },
 };
 
 // Pares de cores sugeridos
