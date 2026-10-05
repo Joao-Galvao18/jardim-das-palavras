@@ -27,6 +27,14 @@ function readPoemForm() {
     errors.push(`${many ? 'os versos' : 'o verso'} ${longChars.join(', ')} ${many ? 'passam' : 'passa'} dos ${MAX_VERSE_CHARS} caracteres`);
   }
   if (!flower) errors.push('escolhe uma flor');
+
+  // Sem asneiras
+  const rude = [];
+  if (hasProfanity(title)) rude.push('o título');
+  if (hasProfanity(author)) rude.push('o autor');
+  const rudeLines = lines.map((l, i) => (hasProfanity(l) ? i + 1 : 0)).filter(Boolean);
+  if (rudeLines.length) rude.push(`${rudeLines.length > 1 ? 'os versos' : 'o verso'} ${rudeLines.join(', ')}`);
+  if (rude.length) errors.push(`${rude.join(', ')} ${rude.length > 1 || rudeLines.length > 1 ? 'têm' : 'tem'} palavras que não são permitidas`);
   const over = lines.length > MAX_VERSES || longChars.length > 0;
   return { title, author, lines, maxChars, flower, errors, over };
 }

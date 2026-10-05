@@ -77,6 +77,7 @@ function draw() {
 
   // Ecrã de entrada
   if (introOpen) {
+    setWateringSound(false);
     updateHandPointer(usingHand);
     drawIntro(t);
     return;

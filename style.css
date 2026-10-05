@@ -88,6 +88,11 @@ canvas {
   font-weight: 400;
 }
 
+#bar .brand:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 
 /* Links */
 .link {

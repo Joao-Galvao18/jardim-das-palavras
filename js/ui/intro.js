@@ -8,6 +8,7 @@ const introPtr = { x: 0, y: 0, active: false };
 function setupIntro() {
   const el = document.getElementById('intro');
   document.getElementById('enterBtn').addEventListener('click', closeIntro);
+  document.getElementById('brand').addEventListener('click', openIntro);
 
   // Rato e dedo por cima das flores
   const move = (e) => {
@@ -24,9 +25,19 @@ function setupIntro() {
   buildIntro();
 }
 
+// Voltar à entrada
+function openIntro() {
+  introOpen = true;
+  const el = document.getElementById('intro');
+  el.classList.add('open');
+  el.setAttribute('aria-hidden', 'false');
+  buildIntro();
+}
+
 // Entrar no jardim
 function closeIntro() {
   introOpen = false;
+  if (!document.querySelector('.modal.open')) openPoemsMenu();
   const el = document.getElementById('intro');
   el.classList.remove('open');
   el.setAttribute('aria-hidden', 'true');
