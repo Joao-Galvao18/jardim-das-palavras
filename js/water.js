@@ -97,10 +97,10 @@ class WateringCan {
   }
 
   // Movimento
-  update(target, watering) {
+  update(target, watering, ease = 0.09) {
     this.prev.set(this.pos);
-    this.pos.x = lerp(this.pos.x, target.x, 0.09);
-    this.pos.y = lerp(this.pos.y, target.y, 0.09);
+    this.pos.x = lerp(this.pos.x, target.x, ease);
+    this.pos.y = lerp(this.pos.y, target.y, ease);
     const vx = this.pos.x - this.prev.x;
     this.swing = lerp(this.swing, constrain(vx * 0.012, -0.2, 0.2), 0.08);
     this.tilt = lerp(this.tilt, watering ? 0.5 : 0, 0.1);

@@ -43,6 +43,50 @@ function kp(hand, name, index) {
   return hand[name] || (hand.keypoints && hand.keypoints[index]);
 }
 
+// Filtro One Euro: quase sem tremor parado, pouco atraso a mexer
+class OneEuro {
+  constructor(minCutoff, beta, dCutoff = 1) {
+    this.minCutoff = minCutoff;
+    this.beta = beta;
+    this.dCutoff = dCutoff;
+    this.reset();
+  }
+
+  reset() {
+    this.x = null;
+    this.dx = 0;
+    this.t = 0;
+  }
+
+  alpha(cutoff, dt) {
+    const tau = 1 / (TWO_PI * cutoff);
+    return 1 / (1 + tau / dt);
+  }
+
+  filter(v, t, minCutoff = this.minCutoff) {
+    if (this.x === null) {
+      this.x = v;
+      this.t = t;
+      return v;
+    }
+    const dt = max(1e-3, t - this.t);
+    this.t = t;
+    this.dx += this.alpha(this.dCutoff, dt) * ((v - this.x) / dt - this.dx);
+    const cutoff = minCutoff + this.beta * abs(this.dx);
+    this.x += this.alpha(cutoff, dt) * (v - this.x);
+    return this.x;
+  }
+}
+
+const handFX = new OneEuro(1.1, 0.006);
+const handFY = new OneEuro(1.1, 0.006);
+
+// Gesto suavizado e confirmado
+let pinchScore = 1;
+let fistScore = 9;
+let gestureVotes = 0;
+let gestureAt = -1e6;
+
 // Mãos detetadas
 function gotHands(results) {
   if (!results || results.length === 0) return;
@@ -56,24 +100,49 @@ function gotHands(results) {
   const midMcp = kp(hand, 'middle_finger_mcp', 9);
   if (!wrist || !thumb || !indexTip || !indexMcp || !midMcp) return;
 
-  // Posição pelos nós dos dedos
+  // Posição pelo centro da palma (não se mexe ao fechar a mão)
+  const palm = [0, 5, 9, 13, 17].map((i) => hand.keypoints && hand.keypoints[i]).filter(Boolean);
+  const hx = palm.reduce((s, p) => s + p.x, 0) / palm.length;
+  const hy = palm.reduce((s, p) => s + p.y, 0) / palm.length;
   const vw = video.width, vh = video.height;
-  const hx = (indexMcp.x + midMcp.x) / 2, hy = (indexMcp.y + midMcp.y) / 2;
-  const nx = constrain(map(hx, vw * 0.12, vw * 0.88, 0, 1), 0, 1);
-  const ny = constrain(map(hy, vh * 0.08, vh * 0.78, 0, 1), 0, 1);
-  handTarget.set(nx * width, ny * height);
+  const rawX = constrain(map(hx, vw * 0.12, vw * 0.88, 0, 1), 0, 1) * width;
+  const rawY = constrain(map(hy, vh * 0.12, vh * 0.85, 0, 1), 0, 1) * height;
 
-  // Pinça ou mão fechada
+  // A mão voltou: começa onde ela está
+  const now = millis();
+  if (now - lastHandSeen > HAND_TIMEOUT) {
+    handFX.reset();
+    handFY.reset();
+    handTarget.set(rawX, rawY);
+    handCursorPos.x = rawX;
+    handCursorPos.y = rawY;
+  }
+
+  // Pinça ou mão fechada, com médias para não piscar
   const handSize = max(1, dist(wrist.x, wrist.y, midMcp.x, midMcp.y));
   const pinch = dist(thumb.x, thumb.y, indexTip.x, indexTip.y) / handSize;
   const tips = [8, 12, 16, 20].map((i) => hand.keypoints && hand.keypoints[i]).filter(Boolean);
   const fist = tips.length
     ? tips.reduce((s, t) => s + dist(t.x, t.y, wrist.x, wrist.y), 0) / tips.length / handSize
     : 9;
-  if (!isPinching && (pinch < 0.3 || fist < 1.25)) isPinching = true;
-  else if (isPinching && pinch > 0.45 && fist > 1.5) isPinching = false;
+  pinchScore = lerp(pinchScore, pinch, 0.55);
+  fistScore = lerp(fistScore, fist, 0.55);
+  const wantOn = pinchScore < 0.32 || fistScore < 1.3;
+  const wantOff = pinchScore > 0.45 && fistScore > 1.5;
+  gestureVotes = (isPinching ? wantOff : wantOn) ? gestureVotes + 1 : 0;
+  if (gestureVotes >= 2) {
+    isPinching = !isPinching;
+    gestureVotes = 0;
+    gestureAt = now;
+  }
 
-  lastHandSeen = millis();
+  // Enquanto o gesto muda, a posição fica mais presa
+  const settling = gestureVotes > 0 || now - gestureAt < 250;
+  const t = now / 1000;
+  handGoal.x = handFX.filter(rawX, t, settling ? 0.25 : handFX.minCutoff);
+  handGoal.y = handFY.filter(rawY, t, settling ? 0.25 : handFY.minCutoff);
+
+  lastHandSeen = now;
 }
 
 // Mão como cursor
@@ -101,6 +170,12 @@ function setHandHover(el) {
 // Cursor da mão
 function updateHandPointer(usingHand) {
   const cursor = document.getElementById('handCursor');
+
+  // Movimento contínuo entre leituras da câmara
+  const k = 1 - Math.exp(-min(0.05, deltaTime / 1000) * 16);
+  handTarget.x += (handGoal.x - handTarget.x) * k;
+  handTarget.y += (handGoal.y - handTarget.y) * k;
+
   if (!usingHand) {
     cursor.classList.remove('show');
     setHandHover(null);
@@ -110,9 +185,9 @@ function updateHandPointer(usingHand) {
     return;
   }
 
-  // Cursor suavizado
-  handCursorPos.x = lerp(handCursorPos.x, handTarget.x, 0.35);
-  handCursorPos.y = lerp(handCursorPos.y, handTarget.y, 0.35);
+  // Cursor
+  handCursorPos.x = handTarget.x;
+  handCursorPos.y = handTarget.y;
   const { x, y } = handCursorPos;
   const el = clickableAt(x, y);
   setHandHover(el);

@@ -26,6 +26,8 @@ function setup() {
 
   layout = computeLayout(plant.poem, plant.seq.length, plant);
   handTarget = createVector(layout.plantX - 40, height * 0.4);
+  handGoal.x = handTarget.x;
+  handGoal.y = handTarget.y;
   can = new WateringCan(layout.plantX - 40, height * 0.4);
 
   setupPointer(cnv);
@@ -103,7 +105,7 @@ function draw() {
   const target = controlTarget(usingHand);
   updateHandPointer(usingHand);
   const watering = usingHand ? isPinching && !pinchOnUI : mouseWatering;
-  can.update(target, watering);
+  can.update(target, watering, usingHand ? 0.16 : 0.09);
   setWateringSound(watering && !plant.dying);
   can.emit(drops);
 

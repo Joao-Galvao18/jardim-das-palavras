@@ -54,7 +54,7 @@ const SPARK_GLYPHS = ['+', '+', '‡', '*', '+'];
 // Hand-tracking
 const HAND_TIMEOUT = 1500;
 const HAND_HOLD = 4000;
-const HAND_INTERVAL = 66;
+const HAND_INTERVAL = 50;
 
 // Poemas próprios
 const MAX_VERSES = 8;

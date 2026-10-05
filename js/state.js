@@ -36,6 +36,7 @@ let modelReady = false;
 let ml5Missing = false;
 let detecting = false;
 let handTarget;
+const handGoal = { x: 0, y: 0 };
 let lastHandSeen = -1e6;
 let isPinching = false;
 let handWasPinching = false;
