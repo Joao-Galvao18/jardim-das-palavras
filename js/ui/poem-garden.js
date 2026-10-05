@@ -103,25 +103,7 @@ function drawPoemGarden(t) {
     it.dim = lerp(it.dim, gardenHover >= 0 && i !== gardenHover ? 0.65 : 1, 0.06);
     ctx.globalAlpha = (0.45 + it.depth * 0.55) * it.dim;
 
-    g.push();
-    g.translate(it.x, it.y);
-    g.scale(s);
-
-    // Caule curvo que dobra com o vento
-    const len = it.stemH;
-    const tipX = sin(it.ang) * len, tipY = -cos(it.ang) * len;
-    g.noFill();
-    g.stroke(P.ink[0], P.ink[1], P.ink[2]);
-    g.strokeWeight(1 / max(0.6, s));
-    g.bezier(0, 0, 0, -len * 0.45, tipX * 0.55, tipY * 0.85, tipX, tipY);
-    g.noStroke();
-    glyph(g, '^', 0, 5, { font: MONO, size: 12, col: P.ink });
-
-    // Flor na ponta do caule
-    g.translate(tipX, tipY);
-    g.rotate(it.ang * 1.3);
-    g.image(flowerSprite(it.type), -GARDEN.spriteW / 2, -GARDEN.headY, GARDEN.spriteW, GARDEN.spriteH);
-    g.pop();
+    drawStemFlower(g, P, it.x, it.y, s, it.stemH, it.ang, it.type);
   });
   ctx.globalAlpha = 1;
 
@@ -129,6 +111,26 @@ function drawPoemGarden(t) {
   if (!gardenItems.length) {
     glyph(g, 'nenhum poema encontrado.', g.width / 2, 90, { size: 22, italic: true, col: P.grey });
   }
+}
+
+// Flor com caule curvo que dobra com o vento
+function drawStemFlower(g, P, x, y, s, len, ang, type) {
+  g.push();
+  g.translate(x, y);
+  g.scale(s);
+  const tipX = sin(ang) * len, tipY = -cos(ang) * len;
+  g.noFill();
+  g.stroke(P.ink[0], P.ink[1], P.ink[2]);
+  g.strokeWeight(1 / max(0.6, s));
+  g.bezier(0, 0, 0, -len * 0.45, tipX * 0.55, tipY * 0.85, tipX, tipY);
+  g.noStroke();
+  glyph(g, '^', 0, 5, { font: MONO, size: 12, col: P.ink });
+
+  // Flor na ponta do caule
+  g.translate(tipX, tipY);
+  g.rotate(ang * 1.3);
+  g.image(flowerSprite(type), -GARDEN.spriteW / 2, -GARDEN.headY, GARDEN.spriteW, GARDEN.spriteH);
+  g.pop();
 }
 
 // Centro da cabeça da flor (coordenadas do jardim)
@@ -191,6 +193,7 @@ function setGardenHover(i) {
 function gardenPick(i) {
   const it = gardenItems[i];
   if (!it) return;
+  sfxClick();
   setModal('poems', false);
   requestPoem(it.poem);
 }

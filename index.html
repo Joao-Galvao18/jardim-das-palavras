@@ -12,7 +12,7 @@
   <meta property="og:type" content="website" />
 
   <!--Ícone-->
-  <link rel="icon" href="favicon.svg?v=28" type="image/svg+xml" />
+  <link rel="icon" href="favicon.svg?v=35" type="image/svg+xml" />
 
   <!--Tipografia-->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,7 +28,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!--Estilos-->
-  <link rel="stylesheet" href="style.css?v=28" />
+  <link rel="stylesheet" href="style.css?v=35" />
 </head>
 <body data-theme="light">
   <header id="bar">
@@ -41,9 +41,20 @@
       <button id="resultsBtn" class="link" type="button">resultados</button>
       <button id="aboutBtn" class="link" type="button">sobre</button>
       <span class="sep" aria-hidden="true"></span>
+      <button id="soundBtn" class="link" type="button" data-sound aria-pressed="true">♪ som</button>
       <button id="theme" class="link" type="button">◐ escuro</button>
     </nav>
   </header>
+
+  <!--Entrada-->
+  <section id="intro" class="intro open" aria-label="entrada">
+    <button class="link intro-sound" type="button" data-sound aria-pressed="true">♪ som</button>
+    <div class="intro-center">
+      <h1 class="intro-title">Jardim <em>das Palavras</em></h1>
+      <button class="pill" id="enterBtn" type="button">Entrar</button>
+    </div>
+    <div class="intro-garden" id="introGarden"></div>
+  </section>
 
   <button id="exportBtn" class="pill" type="button">exportar postal A5 ↓</button>
 
@@ -249,6 +260,7 @@
         <li><span class="mono">poemas</span><span>escolher um poeta e um dos seus poemas</span></li>
         <li><span class="mono">escrever</span><span>plantar um poema teu, com título, autor e a flor que o acompanha</span></li>
         <li><span class="mono">claro / escuro</span><span>trocar as cores do jardim</span></li>
+        <li><span class="mono">som</span><span>ligar ou desligar a música e os sons</span></li>
       </ul>
 
       <h2>técnica</h2>
@@ -258,6 +270,8 @@
         apenas para encontrar a posição da mão. Os postais guardados ficam
         apenas neste navegador. Os retratos dos poetas, usados como fundo
         opcional do postal, vêm da Wikipédia (Wikimedia Commons).
+        A música é gerada ao vivo, no navegador: um fado instrumental
+        para guitarra portuguesa e viola, que nunca se repete igual.
       </p>
 
       <div class="ascii">   ,--.
@@ -282,27 +296,29 @@
   <div id="handCursor" aria-hidden="true"></div>
 
   <!--Código-->
-  <script src="js/data/poems.js?v=28"></script>
-  <script src="js/config.js?v=28"></script>
-  <script src="js/state.js?v=28"></script>
-  <script src="js/utils.js?v=28"></script>
-  <script src="js/theme.js?v=28"></script>
-  <script src="js/flowers.js?v=28"></script>
-  <script src="js/frames.js?v=28"></script>
-  <script src="js/plant.js?v=28"></script>
-  <script src="js/poem-text.js?v=28"></script>
-  <script src="js/layout.js?v=28"></script>
-  <script src="js/water.js?v=28"></script>
-  <script src="js/hands.js?v=28"></script>
-  <script src="js/garden.js?v=28"></script>
-  <script src="js/postcard.js?v=28"></script>
-  <script src="js/results.js?v=28"></script>
-  <script src="js/ui/modals.js?v=28"></script>
-  <script src="js/ui/poems-menu.js?v=28"></script>
-  <script src="js/ui/poem-form.js?v=28"></script>
-  <script src="js/ui/poem-garden.js?v=28"></script>
-  <script src="js/ui/export-panel.js?v=28"></script>
-  <script src="js/ui/interface.js?v=28"></script>
-  <script src="js/main.js?v=28"></script>
+  <script src="js/data/poems.js?v=35"></script>
+  <script src="js/config.js?v=35"></script>
+  <script src="js/state.js?v=35"></script>
+  <script src="js/utils.js?v=35"></script>
+  <script src="js/theme.js?v=35"></script>
+  <script src="js/sound.js?v=35"></script>
+  <script src="js/flowers.js?v=35"></script>
+  <script src="js/frames.js?v=35"></script>
+  <script src="js/plant.js?v=35"></script>
+  <script src="js/poem-text.js?v=35"></script>
+  <script src="js/layout.js?v=35"></script>
+  <script src="js/water.js?v=35"></script>
+  <script src="js/hands.js?v=35"></script>
+  <script src="js/garden.js?v=35"></script>
+  <script src="js/postcard.js?v=35"></script>
+  <script src="js/results.js?v=35"></script>
+  <script src="js/ui/modals.js?v=35"></script>
+  <script src="js/ui/poems-menu.js?v=35"></script>
+  <script src="js/ui/poem-form.js?v=35"></script>
+  <script src="js/ui/poem-garden.js?v=35"></script>
+  <script src="js/ui/export-panel.js?v=35"></script>
+  <script src="js/ui/intro.js?v=35"></script>
+  <script src="js/ui/interface.js?v=35"></script>
+  <script src="js/main.js?v=35"></script>
 </body>
 </html>

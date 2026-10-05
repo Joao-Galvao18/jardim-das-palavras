@@ -31,6 +31,10 @@ function setup() {
   setupPointer(cnv);
   setupInterface();
 
+  // Começa na entrada, com o jardim de poemas por trás
+  openPoemsMenu();
+  setupIntro();
+
   // Webcam
   if (TOUCH_ONLY) ml5Missing = true;
   else initHandTracking();
@@ -69,8 +73,16 @@ function draw() {
   const usingHand = millis() - lastHandSeen < (isPinching ? HAND_HOLD : HAND_TIMEOUT);
   if (!usingHand) isPinching = false;
 
+  // Ecrã de entrada
+  if (introOpen) {
+    updateHandPointer(usingHand);
+    drawIntro(t);
+    return;
+  }
+
   // Painel aberto: o poster fica tapado, só a mão e o jardim de poemas
   if (document.querySelector('.modal.open')) {
+    setWateringSound(false);
     updateHandPointer(usingHand);
     drawPoemGarden(t);
     return;
@@ -90,7 +102,9 @@ function draw() {
   // Regador
   const target = controlTarget(usingHand);
   updateHandPointer(usingHand);
-  can.update(target, usingHand ? isPinching && !pinchOnUI : mouseWatering);
+  const watering = usingHand ? isPinching && !pinchOnUI : mouseWatering;
+  can.update(target, watering);
+  setWateringSound(watering && !plant.dying);
   can.emit(drops);
 
   // Poema e estado
@@ -190,6 +204,7 @@ function drawFooter(usingHand) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  if (introOpen) buildIntro();
   if (poemView === 'garden' && document.getElementById('poems').classList.contains('open')) {
     buildPoemGarden(visiblePoems());
   }

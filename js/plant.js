@@ -94,7 +94,9 @@ class Plant {
     if (this.bloomed) { this.bloomWater++; return; }
     if (++this.water >= DROPS_PER_TIER) {
       this.water = 0;
-      this.grow();
+      const tier = this.grow();
+      if (tier && tier.type === 'node') sfxVerse(this.tiers.filter((t) => t.type === 'node').length - 1);
+      if (tier && this.bloomed) sfxBud();
     }
   }
 
@@ -115,7 +117,10 @@ class Plant {
     for (const tier of this.tiers) tier.appear = lerp(tier.appear, 1, GROW_LERP);
     const target = this.bloomed ? min(1, this.bloomWater / OPEN_DROPS) : 0;
     this.open = lerp(this.open, target, OPEN_LERP);
-    if (!this.complete && this.open > 0.97) this.complete = true;
+    if (!this.complete && this.open > 0.97) {
+      this.complete = true;
+      sfxBloom(this.flower.type);
+    }
   }
 
   // Desenha um fragmento

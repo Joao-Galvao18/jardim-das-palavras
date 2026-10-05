@@ -11,11 +11,7 @@ function setupInterface() {
     renderResults();
     setModal('results', true);
   });
-  byId('poemsBtn').addEventListener('click', () => {
-    renderPoemChips();
-    renderPoemsMenu();
-    setModal('poems', true);
-  });
+  byId('poemsBtn').addEventListener('click', openPoemsMenu);
 
   // Pesquisa
   const search = byId('poemSearch');
@@ -58,4 +54,14 @@ function setupInterface() {
   // Postal e resultados
   setupExportPanel();
   updateResultsCount();
+
+  // Som
+  initSound();
+}
+
+// Abre os poemas
+function openPoemsMenu() {
+  renderPoemChips();
+  renderPoemsMenu();
+  setModal('poems', true);
 }
