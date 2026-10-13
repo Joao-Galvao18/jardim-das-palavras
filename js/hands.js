@@ -30,10 +30,17 @@ function startDetection() {
   if (detecting || !camReady || !modelReady) return;
   detecting = true;
   const tick = async () => {
+    // Separador escondido: não gasta nada
+    if (document.hidden) {
+      setTimeout(tick, 500);
+      return;
+    }
     try {
       gotHands(await handPose.detect(video));
     } catch (e) {}
-    setTimeout(tick, HAND_INTERVAL);
+    // Sem mão à vista há algum tempo: procura com calma
+    const idle = millis() - lastHandSeen > HAND_TIMEOUT * 2;
+    setTimeout(tick, idle ? HAND_IDLE_INTERVAL : HAND_INTERVAL);
   };
   tick();
 }

@@ -82,6 +82,17 @@ class Pollen {
 }
 
 // Regador
+// Desenho do regador: corpo, bico a subir e o chuveiro (":" são os furos)
+const CAN_ART = [
+  '  .-.     ,:',
+  ' (^u^)___/ :',
+  "  '-'     ':",
+];
+// Linha e coluna do chuveiro, de onde sai a água
+const CAN_TIP = [1, 11];
+const CAN_SIZE = 13;
+const CAN_LH = 12;
+
 // Regador em ASCII
 class WateringCan {
   constructor(x, y) {
@@ -122,25 +133,29 @@ class WateringCan {
     const tip = this.tip();
     const dir = this.dir();
     for (let k = 0; k < n; k++) {
+      // O chuveiro espalha a água por toda a altura dos furos
+      const spread = createVector(0, random(-1, 1) * CAN_LH).rotate(this.angle);
       const sp = random(0.8, 1.8);
       list.push(new WaterDrop(
-        tip.x + random(-3, 3),
-        tip.y + random(-2, 2),
+        tip.x + spread.x + random(-2, 2),
+        tip.y + spread.y,
         dir.x * sp + random(-0.3, 0.3),
-        dir.y * sp + random(0, 0.6),
+        dir.y * sp + random(-0.2, 0.6),
       ));
     }
   }
 
+  // Origem no meio do corpo; o bico sai do próprio desenho
   show() {
-    this.cw = measure(MAIN, 'M', MONO, 15);
-    this.tipLocal.set(6.5 * this.cw, -1);
-    const rows = ['  ,--.', '[____]\\__o', ' \\__/'];
+    this.cw = measure(MAIN, 'M', MONO, CAN_SIZE);
+    const ox = 3.5 * this.cw, oy = CAN_LH;
+    const [row, col] = CAN_TIP;
+    this.tipLocal.set((col + 0.5) * this.cw - ox, row * CAN_LH - oy - CAN_SIZE * 0.3);
     push();
     translate(this.pos.x, this.pos.y);
     rotate(this.angle);
-    rows.forEach((r, i) => {
-      glyph(MAIN, r, -3 * this.cw, -12 + i * 15, { font: MONO, size: 15, align: LEFT, alpha: 255 * this.alpha });
+    CAN_ART.forEach((r, i) => {
+      glyph(MAIN, r, -ox, i * CAN_LH - oy, { font: MONO, size: CAN_SIZE, align: LEFT, alpha: 255 * this.alpha });
     });
     pop();
   }

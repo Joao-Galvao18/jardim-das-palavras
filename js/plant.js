@@ -195,13 +195,9 @@ class Plant {
       const alpha = 255 * ease * L;
 
       if (tier.type === 'node') {
-        // Nó ~*~
-        const w = measureCached('~*~', MONO, 13);
-        if (P.knock !== false) {
-          g.fill(P.paper[0], P.paper[1], P.paper[2], 255 * L);
-          g.rect(-w / 2 - 2, y - 10, w + 4, 13);
-        }
-        glyph(g, '~*~', 0, y, { font: MONO, size: 13, alpha, col: P.ink });
+        // Fim de verso: um par de folhas a sair do caule
+        glyph(g, '<', -6, y, { font: MONO, size: 12, alpha, col: P.ink });
+        glyph(g, '>', 6, y, { font: MONO, size: 12, alpha, col: P.ink });
       } else {
         this.drawWord(g, P, tier, y, wordSize, alpha);
       }
@@ -214,10 +210,8 @@ class Plant {
     if (this.bloomed || stat) {
       drawFlower(g, P, this.flower, stat ? 1 : this.open, 255 * L, t);
     } else {
-      g.stroke(P.ink[0], P.ink[1], P.ink[2], 255 * L);
-      g.strokeWeight(1);
-      g.line(0, -7, 0, -12);
-      g.noStroke();
+      // Rebento no topo
+      glyph(g, 'o', 0, -6, { font: MONO, size: 11, col: P.ink, alpha: 255 * L });
     }
     g.pop();
     g.pop();
